@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <name>uav_landing</name>
+  <version>0.0.0</version>
+  <description>Project for ESE 650</description>
+
+  <maintainer email="gsuveer@seas.upenn.edu">suveer</maintainer>
+  <maintainer email="poojacounsul@yahoo.in">pooja</maintainer>	
+
+  <license>MIT</license>
+
+  <!-- Dependencies which this package needs to build itself. -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Dependencies needed to compile this package. -->
+
+  <!-- Dependencies needed after this package is compiled. -->
+  <run_depend>hector_quadrotor_gazebo</run_depend>
+  <run_depend>hector_gazebo_worlds</run_depend>
+  <run_depend>hector_mapping</run_depend>
+  <run_depend>hector_geotiff</run_depend>
+  <run_depend>hector_trajectory_server</run_depend>
+	
+</package>
