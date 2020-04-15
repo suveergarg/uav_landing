@@ -4,6 +4,7 @@ http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImage
 https://answers.ros.org/question/145801/cant-locate-node-in-package/
 """
 
+#!/usr/bin/env python
 import rospy
 import cv2
 from sensor_msgs.msg import Image
@@ -36,8 +37,7 @@ def callback(data):
 def init():
   rospy.init_node('camera_feed_proecssor')
   rospy.Subscriber('/downward_cam/camera/image', Image, callback)
-  while not rospy.is_shutdown():
-      rospy.spin()
+  rospy.spin()
 
 if __name__ == '__main__':
   init()
