@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 https://answers.ros.org/question/321501/subscriber-python-camerainfo-and-image/
 http://wiki.ros.org/cv_bridge/Tutorials/ConvertingBetweenROSImagesAndOpenCVImagesPython
