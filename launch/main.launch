@@ -18,16 +18,18 @@
          -z 0.3"
       respawn="false" output="screen"/>
 
- <!--  <node pkg="bebop_gazebo" type="moving_helipad.py" name="moving_helipad" output="screen" >
+  <node pkg="bebop_gazebo" type="moving_helipad.py" name="moving_helipad" output="screen" >
       <param name="x_vel" type="double" value="10.0" />
       <param name="y_vel" type="double" value="10.0" />
       <param name="seconds_before_moving" type="double" value="10" />
-  </node> -->
+  </node>
+  
+ <node pkg="uav_landing" type="camera_feed_proecssor.py" name="camera_feed_proecssor" output="screen"/>
 
   <!-- Spawn simulated quadrotor uav -->
   <include file="$(find hector_quadrotor_gazebo)/launch/spawn_quadrotor.launch" >
     <arg name="model" value="$(find hector_quadrotor_description)/urdf/quadrotor_downward_cam.gazebo.xacro"/>
-    <arg name="controllers" value="
+    <!-- <arg name="controllers" value=" -->
         controller/attitude
         controller/velocity
         controller/position
