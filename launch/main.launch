@@ -26,7 +26,7 @@
   </node>
   
  <node pkg="uav_landing" type="camera_feed_proecssor.py" name="camera_feed_proecssor" output="screen"/>
-=======
+
 
   <node pkg="uav_landing" type="moving_helipad.py" name="moving_helipad" output="screen" >
       <param name="x_vel" type="double" value="0.0" />
