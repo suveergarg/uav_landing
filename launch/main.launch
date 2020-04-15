@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 
 <launch>
-
-
-
+   
+  <env name="GAZEBO_MODEL_PATH" value="$(find bebop_gazebo)/models:$GAZEBO_MODEL_PATH" />
 	
+
   <!-- Start Gazebo with wg world running in (max) realtime -->
   <include file="$(find hector_gazebo_worlds)/launch/start.launch">
    <arg name="world" value="worlds/zephyr_demo.world"/>
@@ -18,6 +18,7 @@
          -z 0.3"
       respawn="false" output="screen"/>
 
+
   <node pkg="bebop_gazebo" type="moving_helipad.py" name="moving_helipad" output="screen" >
       <param name="x_vel" type="double" value="10.0" />
       <param name="y_vel" type="double" value="10.0" />
@@ -25,6 +26,13 @@
   </node>
   
  <node pkg="uav_landing" type="camera_feed_proecssor.py" name="camera_feed_proecssor" output="screen"/>
+=======
+
+  <node pkg="uav_landing" type="moving_helipad.py" name="moving_helipad" output="screen" >
+      <param name="x_vel" type="double" value="0.0" />
+      <param name="y_vel" type="double" value="1.0" />
+  </node>
+
 
   <!-- Spawn simulated quadrotor uav -->
   <include file="$(find hector_quadrotor_gazebo)/launch/spawn_quadrotor.launch" >
