@@ -14,7 +14,7 @@ from cv_bridge import CvBridge, CvBridgeError
 import matplotlib.pyplot as plt
 
 def callback(data):
-  print('got here')
+  # print('got here')
   bridge = CvBridge()
   try:
     cv_image = bridge.imgmsg_to_cv2(data, "bgr8")
@@ -22,14 +22,14 @@ def callback(data):
     print(e)
 
   (rows,cols,channels) = cv_image.shape
-  print('rows and columns ', rows, cols)
+  # print('rows and columns ', rows, cols)
   gray = cv2.cvtColor(cv_image, cv2.COLOR_BGR2GRAY)
   aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
   parameters =  aruco.DetectorParameters_create()
   corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
   frame_markers = aruco.drawDetectedMarkers(gray.copy(), corners, ids)
   if ids == None:
-    print('no image')
+    # print('no image')
     return
 
   print("plotting")

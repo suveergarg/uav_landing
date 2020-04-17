@@ -7,8 +7,13 @@
 
   <!-- Start Gazebo with wg world running in (max) realtime -->
   <include file="$(find hector_gazebo_worlds)/launch/start.launch">
-   <arg name="world" value="worlds/zephyr_demo.world"/>
+   <!-- <arg name="world" value="worlds/zephyr_demo.world"/> -->
+  <arg name="world" value="$(find uav_landing)/worlds/hecto.world"/>
   </include>
+
+<!--  <include file="$(find hector_gazebo_worlds)/launch/start.launch">
+   <arg name="world" value="$(find uav_landing)/worlds/simple_city.world"/> 
+  </include> -->
 
   <node name="spawn_helipad" pkg="gazebo_ros" type="spawn_model"
       args="-file $(find bebop_gazebo)/models/marker3/model.sdf
