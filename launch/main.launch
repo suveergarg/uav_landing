@@ -7,13 +7,10 @@
 
   <!-- Start Gazebo with wg world running in (max) realtime -->
   <include file="$(find hector_gazebo_worlds)/launch/start.launch">
-   <!-- <arg name="world" value="worlds/zephyr_demo.world"/> -->
-  <arg name="world" value="$(find uav_landing)/worlds/hecto.world"/>
+   <arg name="world" value="worlds/zephyr_demo.world"/>
+  <!-- <arg name="world" value="$(find uav_landing)/worlds/hecto.world"/> -->
   </include>
 
-<!--  <include file="$(find hector_gazebo_worlds)/launch/start.launch">
-   <arg name="world" value="$(find uav_landing)/worlds/simple_city.world"/> 
-  </include> -->
 
   <node name="spawn_helipad" pkg="gazebo_ros" type="spawn_model"
       args="-file $(find bebop_gazebo)/models/marker3/model.sdf
@@ -28,7 +25,7 @@
 
   <node pkg="uav_landing" type="moving_helipad.py" name="moving_helipad" output="screen" >
       <param name="x_vel" type="double" value="0.0" />
-      <param name="y_vel" type="double" value="1.0" />
+      <param name="y_vel" type="double" value="0.0" />
       <param name="seconds_before_moving" type="double" value="10" />
   </node>
 
@@ -45,7 +42,7 @@
   </include>
 
   <!-- Start rviz visualization with preset config -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find hector_quadrotor_demo)/rviz_cfg/outdoor_flight.rviz"/>
+  <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find hector_quadrotor_demo)/rviz_cfg/outdoor_flight.rviz"/> -->
 
 
 </launch>
