@@ -17,10 +17,6 @@
         <remap from="camera_info"   to="$(arg cam_info_topic)" />
     </node>
 
-    <node name="ar_helipad" pkg="ar_helipad" type="ar_helipad.py" respawn="false" output="screen">
-        <param name="marker_size" type="double" value="$(arg marker_size)"/>
-        <param name="mode" type="int" value="1"/>
-    </node>
 </launch>
 
 

@@ -39,6 +39,13 @@
   <include file = "$(find uav_landing)/launch/hector_helipad_individual.launch">
   </include>
 
+  <!-- Launch file for visual odometry -->
+  <include file = "$(find uav_landing)/launch/visual_odometry.launch">
+  </include>
+
+  <!-- Node for state estimation of the quadrotor -->
+  <node pkg="hector_pose_estimation" type="pose_estimation" name="hector_pose_estimation" />
+
   <!-- Spawn simulated quadrotor uav -->
   <include file="$(find hector_quadrotor_gazebo)/launch/spawn_quadrotor.launch" >
     <arg name="model" value="$(find hector_quadrotor_description)/urdf/quadrotor_downward_cam.gazebo.xacro"/>
