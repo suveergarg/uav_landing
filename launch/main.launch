@@ -44,7 +44,7 @@
   </include>
 
   <!-- Node for state estimation of the quadrotor -->
-  <node pkg="hector_pose_estimation" type="pose_estimation" name="hector_pose_estimation" />
+  <!--<node pkg="hector_pose_estimation" type="pose_estimation" name="hector_pose_estimation" />-->
 
   <!-- Spawn simulated quadrotor uav -->
   <include file="$(find hector_quadrotor_gazebo)/launch/spawn_quadrotor.launch" >

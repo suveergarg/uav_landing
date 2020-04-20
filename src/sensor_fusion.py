@@ -6,10 +6,11 @@ pub_twist = rospy.Publisher('/twistupdate', TwistWithCovarianceStamped, queue_si
 pub_pose = rospy.Publisher('/poseupdate',   PoseWithCovarianceStamped, queue_size=10)
 
 def callback(msg):
-	twist = TwistWithCovarianceStamped()
-	pose  = PoseWithCovarianceStamped()	
+	twist_msg = TwistWithCovarianceStamped()
+	pose_msg  = PoseWithCovarianceStamped()	
 
-	pose = 
+	pose_msg.pose  = msg.pose
+	twist_msg.twist = msg.twist 
 	
 	pub_pose.publish(pose)
 	pub_twist.publish(twist)
