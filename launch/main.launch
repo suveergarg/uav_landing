@@ -23,20 +23,29 @@
  
  <!-- <node pkg="uav_landing" type="camera_feed_processor.py" name="camera_feed_processor" output="screen" respawn = "true"/> -->
 
-
   <node pkg="uav_landing" type="moving_helipad.py" name="moving_helipad" output="screen" >
       <param name="x_vel" type="double" value="0.0" />
-      <param name="y_vel" type="double" value="1.0" />
-      <param name="seconds_before_moving" type="double" value="10" />
+      <param name="y_vel" type="double" value="2.0" />
+      <param name="seconds_before_moving" type="double" value="2" />
   </node>
 
 <!-- https://answers.ros.org/question/150756/ar_track_alvar-image-topic-to-point-cloud/ -->
-  <include file = "$(find ar_track_alvar)/launch/pr2_indiv_no_kinect.launch">
-      <arg name = "marker_size" value = "500"/>
+  <!--<include file = "$(find ar_track_alvar)/launch/pr2_indiv_no_kinect.launch">
+      <arg name = "marker_size" value = "5"/>
       <arg name = "cam_image_topic" value = "/downward_cam/camera/image"/>
       <arg name = "cam_info_topic" value = "/downward_cam/camera/camera_info"/>
       <arg name="output_frame" default="/base_link" />
+  </include>-->
+
+  <include file = "$(find uav_landing)/launch/hector_helipad_individual.launch">
   </include>
+
+  <!-- Launch file for visual odometry -->
+  <include file = "$(find uav_landing)/launch/visual_odometry.launch">
+  </include>
+
+  <!-- Node for state estimation of the quadrotor -->
+  <!--<node pkg="hector_pose_estimation" type="pose_estimation" name="hector_pose_estimation" />-->
 
   <!-- Spawn simulated quadrotor uav -->
   <include file="$(find hector_quadrotor_gazebo)/launch/spawn_quadrotor.launch" >

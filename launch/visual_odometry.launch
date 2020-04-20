@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<launch>
+
+  <node pkg="tf" type="static_transform_publisher" name="odom_to_map"
+    args="0 0  0  0 0 0  /world /odom 100" />
+
+  <arg name="camera" default="/downward_cam/camera"/>
+  
+  <!-- Node for remaping topics for image_proc -->
+  <node pkg = "uav_landing" type="remap" name= "remap"/>
+  
+  <!-- Run the stereo image proc -->
+  <node ns="$(arg camera)" pkg="image_proc" type="image_proc" name="image_proc"/>
+ 
+
+  <!-- Viso2 -->
+  <node pkg="viso2_ros" type="mono_odometer" name="mono_odometer">
+    <remap from="image" to="$(arg camera)/image_rect"/>
+    <!--Change Link Later -->
+    <param name="base_link_frame_id" value="base_link"/>
+    <param name="camera_height" value="1.00" />
+    <param name="camera_pitch"  value="0.00" />
+  </node> -->
+
+</launch>
