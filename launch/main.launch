@@ -40,8 +40,8 @@
   </include>
 
   <!-- Launch file for visual odometry -->
-  <include file = "$(find uav_landing)/launch/visual_odometry.launch">
-  </include>
+  <!--<include file = "$(find uav_landing)/launch/visual_odometry.launch">
+  </include>-->
 
   <!-- Node for state estimation of the quadrotor -->
   <!--<node pkg="hector_pose_estimation" type="pose_estimation" name="hector_pose_estimation" />-->
@@ -56,6 +56,10 @@
         "/>
 
   </include>
+
+  <!-- Node for Exploration -->
+  <node pkg="uav_landing" type="exploration_node.py" name="exploration_node" output="screen" />
+
 
   <!-- Start rviz visualization with preset config -->
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find hector_quadrotor_demo)/rviz_cfg/outdoor_flight.rviz"/>
