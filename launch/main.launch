@@ -29,14 +29,6 @@
       <param name="seconds_before_moving" type="double" value="2" />
   </node>
 
-<!-- https://answers.ros.org/question/150756/ar_track_alvar-image-topic-to-point-cloud/ -->
-  <!--<include file = "$(find ar_track_alvar)/launch/pr2_indiv_no_kinect.launch">
-      <arg name = "marker_size" value = "5"/>
-      <arg name = "cam_image_topic" value = "/downward_cam/camera/image"/>
-      <arg name = "cam_info_topic" value = "/downward_cam/camera/camera_info"/>
-      <arg name="output_frame" default="/base_link" />
-  </include>-->
-
   <include file = "$(find uav_landing)/launch/hector_helipad_individual.launch">
   </include>
 
