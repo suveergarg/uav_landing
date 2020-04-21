@@ -20,8 +20,8 @@
          -z 0.3"
       respawn="false" output="screen"/>
 
- 
- <!-- <node pkg="uav_landing" type="camera_feed_processor.py" name="camera_feed_processor" output="screen" respawn = "true"/> -->
+ <!-- estimate_pad_velocity -->
+ <node pkg="tf_velocity_estimator" type="estimate_pad_velocity.py" name="estimate_pad_velocity" output="screen" respawn = "true"/>
 
   <node pkg="uav_landing" type="moving_helipad.py" name="moving_helipad" output="screen" >
       <param name="x_vel" type="double" value="0.0" />
