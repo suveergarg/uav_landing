@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr 21 20:27:59 2020
+
+@author: gsuveer
+"""
+
 
 from __future__ import print_function, division
 import quadrocoptertrajectory as quadtraj
@@ -5,7 +13,8 @@ from tf_velocity_estimator.msg import PosesAndVelocities
 from tf_velocity_estimator.msg import Velocity
 from geometry_msgs.msg import PoseStamped
 import rospy
-'''
+
+
 # Define the trajectory starting state:
 pos0 = [0, 0, 2] #position
 vel0 = [0, 0, 0] #velocity
@@ -54,7 +63,7 @@ inputsFeasible = traj.check_input_feasibility(fmin, fmax, wmax, minTimeSec)
 floorPoint  = [0,0,0]  # a point on the floor
 floorNormal = [0,0,1]  # we want to be in this direction of the point (upwards)
 positionFeasible = traj.check_position_feasibility(floorPoint, floorNormal)
-'''
+
 
 goal_msg = PoseStamped()
 def callback(msg):
@@ -75,7 +84,7 @@ def callback(msg):
     goal_msg.pose.position.x = avg_x/len(latest_poses) + avg_x*delta_t/len(latest_poses)
     goal_msg.pose.position.y = avg_y/len(latest_poses) + avg_y*delta_t/len(latest_poses)
     goal_msg.pose.position.z = avg_z/len(latest_poses) + avg_z*delta_t/len(latest_poses) + 5
-    pub.publish(goal_msg)
+    
 
 rospy.init_node('controller_node')
 sub = rospy.Subscriber('/pad_velocity', PosesAndVelocities,callback, queue_size = 10)
@@ -85,3 +94,4 @@ while not rospy.is_shutdown():
 
   
     
+
