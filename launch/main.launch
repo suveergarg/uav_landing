@@ -57,7 +57,7 @@
         "/>
   </include>
   <!-- Node for Exploration -->
-  <!-- <node pkg="uav_landing" type="exploration_node.py" name="exploration_node" output="screen" /> -->
+  <node pkg="uav_landing" type="exploration_node.py" name="exploration_node" output="screen" />
 
   <!-- estimate_pad_velocity -->
   <node pkg="uav_landing" type="estimate_pad_velocity.py" name="estimate_pad_velocity" output="screen" respawn = "true"/>
