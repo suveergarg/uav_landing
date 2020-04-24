@@ -2,7 +2,7 @@
   <world name='default'>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose frame=''>24.8659 -8.27459 25.9036 0 0.821257 2.92013</pose>
+        <pose frame=''>4.57497 15.7616 4.27265 0 0.2 -1.5707</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
@@ -123,75 +123,19 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='marker3'>
-      <link name='link'>
-        <gravity>0</gravity>
-        <collision name='collision_marker3'>
-          <pose frame=''>0 0 0 0 -0 0</pose>
-          <geometry>
-            <box>
-              <size>5 5 0.01</size>
-            </box>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='visual_marker3'>
-          <pose frame=''>0 0 0 0 -0 0</pose>
-          <geometry>
-            <box>
-              <size>5 5 0.01</size>
-            </box>
-          </geometry>
-          <material>
-            <script>
-              <uri>model://ar_helipad/materials/scripts</uri>
-              <uri>model://ar_helipad/materials/textures</uri>
-              <name>Marker3/Diffuse</name>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <inertial>
-          <inertia>
-            <ixx>1</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>1</iyy>
-            <iyz>0</iyz>
-            <izz>1</izz>
-          </inertia>
-          <mass>1</mass>
-        </inertial>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <pose frame=''>10 1 0.3 0 -0 0</pose>
-    </model>
     <model name='quadrotor'>
       <link name='base_link'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <inertial>
-          <pose frame=''>-0.000108 0 -8e-06 0 -0 0</pose>
-          <mass>1.478</mass>
+          <pose frame=''>-9.2e-05 0 -0.01499 0 -0 0</pose>
+          <mass>1.748</mass>
           <inertia>
-            <ixx>0.0115202</ixx>
+            <ixx>0.013931</ixx>
             <ixy>0</ixy>
-            <ixz>-1.9187e-06</ixz>
-            <iyy>0.0115457</iyy>
-            <iyz>0</iyz>
-            <izz>0.0218256</izz>
+            <ixz>4.78352e-07</ixz>
+            <iyy>0.0139566</iyy>
+            <iyz>2.09103e-17</iyz>
+            <izz>0.0219876</izz>
           </inertia>
         </inertial>
         <collision name='base_link_collision'>
@@ -216,7 +160,28 @@
             </friction>
           </surface>
         </collision>
-        <collision name='base_link_fixed_joint_lump__sonar_link_collision_1'>
+        <collision name='base_link_fixed_joint_lump__laser0_frame_collision_1'>
+          <pose frame=''>0 -0 -0.0855 -3.14159 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.058 0.058 0.087</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='base_link_fixed_joint_lump__sonar_link_collision_2'>
           <pose frame=''>-0.16 0 -0.012 3.14159 1.57079 3.14159</pose>
           <geometry>
             <box>
@@ -246,7 +211,22 @@
             </mesh>
           </geometry>
         </visual>
-        <visual name='base_link_fixed_joint_lump__sonar_link_visual_1'>
+        <visual name='base_link_fixed_joint_lump__laser0_frame_visual_1'>
+          <pose frame=''>0 0 -0.097 -3.14159 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/opt/ros/melodic/share/hector_sensors_description/meshes/hokuyo_utm30lx/hokuyo_utm_30lx.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <uri>__default__</uri>
+              <name>__default__</name>
+            </script>
+          </material>
+        </visual>
+        <visual name='base_link_fixed_joint_lump__sonar_link_visual_2'>
           <pose frame=''>-0.16 0 -0.012 3.14159 1.57079 3.14159</pose>
           <geometry>
             <mesh>
@@ -262,28 +242,65 @@
           </material>
         </visual>
         <velocity_decay/>
-        <sensor name='downward_cam_camera_sensor' type='camera'>
-          <update_rate>20</update_rate>
+        <sensor name='front_cam_camera_sensor' type='camera'>
+          <update_rate>10</update_rate>
           <camera name='__default__'>
-            <horizontal_fov>1.74533</horizontal_fov>
+            <horizontal_fov>1.5708</horizontal_fov>
             <image>
-              <format>L8</format>
-              <width>640</width>
-              <height>480</height>
+              <format>R8G8B8</format>
+              <width>320</width>
+              <height>240</height>
             </image>
             <clip>
               <near>0.01</near>
               <far>100</far>
             </clip>
           </camera>
-          <plugin name='downward_cam_camera_controller' filename='libgazebo_ros_camera.so'>
-            <cameraName>downward_cam</cameraName>
+          <plugin name='front_cam_camera_controller' filename='libgazebo_ros_camera.so'>
+            <cameraName>front_cam</cameraName>
             <imageTopicName>camera/image</imageTopicName>
             <cameraInfoTopicName>camera/camera_info</cameraInfoTopicName>
-            <frameName>downward_cam_optical_frame</frameName>
+            <frameName>front_cam_optical_frame</frameName>
             <robotNamespace>/</robotNamespace>
           </plugin>
-          <pose frame=''>0.4 0 0 3.14159 1.57079 3.14159</pose>
+          <pose frame=''>0.05 0 -0.06 0 -0 0</pose>
+        </sensor>
+        <velocity_decay/>
+        <sensor name='laser0' type='ray'>
+          <always_on>1</always_on>
+          <update_rate>40</update_rate>
+          <visualize>0</visualize>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>1081</samples>
+                <resolution>1</resolution>
+                <min_angle>-2.35619</min_angle>
+                <max_angle>2.35619</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>1</samples>
+                <min_angle>0</min_angle>
+                <max_angle>0</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>0.2</min>
+              <max>30</max>
+              <resolution>0.01</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>0</mean>
+              <stddev>0.004</stddev>
+            </noise>
+          </ray>
+          <plugin name='gazebo_ros_laser0_controller' filename='libgazebo_ros_laser.so'>
+            <topicName>scan</topicName>
+            <frameName>laser0_frame</frameName>
+            <robotNamespace>/</robotNamespace>
+          </plugin>
+          <pose frame=''>0 0 -0.097 -3.14159 -0 0</pose>
         </sensor>
         <gravity>1</gravity>
         <velocity_decay/>
@@ -412,11 +429,67 @@
       </plugin>
       <pose frame=''>0 0 0.3 0 -0 0</pose>
     </model>
+    <model name='marker3'>
+      <link name='link'>
+        <gravity>0</gravity>
+        <collision name='collision_marker3'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>5 5 0.01</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual_marker3'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>5 5 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://ar_helipad/materials/scripts</uri>
+              <uri>model://ar_helipad/materials/textures</uri>
+              <name>Marker3/Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <inertial>
+          <inertia>
+            <ixx>1</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>1</iyy>
+            <iyz>0</iyz>
+            <izz>1</izz>
+          </inertia>
+          <mass>1</mass>
+        </inertial>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose frame=''>10 1 0.3 0 -0 0</pose>
+    </model>
     <state world_name='default'>
-      <sim_time>354 530000000</sim_time>
-      <real_time>620 807262222</real_time>
-      <wall_time>1587093864 412823846</wall_time>
-      <iterations>141812</iterations>
+      <sim_time>120 570000000</sim_time>
+      <real_time>320 568235135</real_time>
+      <wall_time>1587686608 869444243</wall_time>
+      <iterations>48228</iterations>
       <model name='ground_plane'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -428,23 +501,23 @@
         </link>
       </model>
       <model name='marker3'>
-        <pose frame=''>10 -5.2875 0.3 0 -0 0</pose>
+        <pose frame=''>10 2.735 0.3 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>10 -5.2875 0.3 0 -0 0</pose>
-          <velocity>0 -1 0 0 -0 0</velocity>
+          <pose frame=''>10 2.735 0.3 0 -0 0</pose>
+          <velocity>0 -2 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
       <model name='quadrotor'>
-        <pose frame=''>-0.003384 -0.000302 0.182452 -0 0.000126 -0.119498</pose>
+        <pose frame=''>0.059613 -0.565393 0.182466 0 -0 0.239693</pose>
         <scale>1 1 1</scale>
         <link name='base_link'>
-          <pose frame=''>-0.003384 -0.000302 0.182452 -0 0.000126 -0.119498</pose>
-          <velocity>0.009173 -0.001086 -0.005566 0.00599 0.050257 5.5e-05</velocity>
-          <acceleration>3.66945 -0.43078 -2.22649 2.37049 1.25616 0.021893</acceleration>
-          <wrench>5.42345 -0.636692 -3.29076 0 -0 0</wrench>
+          <pose frame=''>0.059613 -0.565393 0.182466 0 -0 0.239693</pose>
+          <velocity>0.005032 -0.002189 0.004269 0.011994 0.027576 -0</velocity>
+          <acceleration>3.70257 -1.59038 3.41703 0.179594 -0.076527 3.01188</acceleration>
+          <wrench>6.47209 -2.77998 5.97298 0 -0 0</wrench>
         </link>
       </model>
       <light name='sun'>
