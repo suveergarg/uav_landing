@@ -66,7 +66,7 @@
  <include file="$(find hector_slam_launch)/launch/tutorial.launch" />
   
   <!-- Generate scanned map in real time with ROSBAG -->
-  <node name="rosbag" pkg="rosbag" type="record" args="-a -o /home/pooja/Desktop/catkin_ws/src/uav_landing/" />
+  <node name="rosbag" pkg="rosbag" type="record" args="-a -o $(arg rosbagdir)" />
   <!-- /home/pooja/Desktop/catkin_ws/src/uav_landing/Team_Hector_MappingBox_RoboCup_2011_Rescue_Arena.bag -->
   <!-- Start rviz visualization with preset config -->
   <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find hector_quadrotor_demo)/rviz_cfg/outdoor_flight.rviz"/> -->
