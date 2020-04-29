@@ -1,0 +1,3 @@
+<!--
+  <node pkg="rosbag" type="play" name="scan_map" output="screen" args="--clock $(arg bagpath)/$(arg bagfile)"/>-->
+

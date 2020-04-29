@@ -59,22 +59,26 @@ positionFeasible = traj.check_position_feasibility(floorPoint, floorNormal)
 goal_msg = PoseStamped()
 def callback(msg):
     global goal_msg
-    latest_poses = msg.latest_poses
+    latest_poses    = msg.latest_poses
+    latest_velocity = msg.latest_velocities 
     #print(type(msg.latest_poses))
-    avg_x, avg_y, avg_z =0,0,0
+    avg_x, avg_y, avg_z, avg_vx, avg_vy, avg_vz =0,0,0,0,0,0
     delta_t = 0.1
 	
     for i in range(len(latest_poses)):
         avg_x = avg_x + latest_poses[i].pose.position.x 
         avg_y = avg_y + latest_poses[i].pose.position.y
         avg_z = avg_z + latest_poses[i].pose.position.z
+        avg_vx = avg_vx + latest_velocity[i].vx
+        avg_vy = avg_vy + latest_velocity[i].vy
+        avg_vz = avg_vz + latest_velocity[i].vz
 
     #delta_t = goal_msg.header.stamp.secs  - latest_poses[i].header.stamp.secs
     goal_msg.header.stamp  = latest_poses[i].header.stamp    
     goal_msg.header.frame_id =  'world'
-    goal_msg.pose.position.x = avg_x/len(latest_poses) + avg_x*delta_t/len(latest_poses)
-    goal_msg.pose.position.y = avg_y/len(latest_poses) + avg_y*delta_t/len(latest_poses)
-    goal_msg.pose.position.z = avg_z/len(latest_poses) + avg_z*delta_t/len(latest_poses) + 5
+    goal_msg.pose.position.x = avg_x/len(latest_poses) + avg_vx*delta_t/len(latest_poses)
+    goal_msg.pose.position.y = avg_y/len(latest_poses) + avg_vy*delta_t/len(latest_poses)
+    goal_msg.pose.position.z = avg_z/len(latest_poses) + avg_vz*delta_t/len(latest_poses) + 5
     pub.publish(goal_msg)
 
 rospy.init_node('controller_node')

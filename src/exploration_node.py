@@ -14,7 +14,7 @@ from hector_uav_msgs.msg import PoseAction
 from visualization_msgs.msg import Marker
 from hector_uav_msgs.msg import PoseActionGoal
 
-z = 15
+z = 10
 exploration_waypoints = [[5,5,z],[5,-5,z],[-5,-5,z],[-5,5,z]]
 waypoint_index        = 0 
     
