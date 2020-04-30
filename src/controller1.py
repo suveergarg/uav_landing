@@ -12,6 +12,7 @@ from tf_velocity_estimator.msg import PosesAndVelocities
 from tf_velocity_estimator.msg import Velocity
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import TwistStamped
+from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 import rospy
 from quadrocoptertrajectory import SingleAxisTrajectory
@@ -141,8 +142,11 @@ sub_padstate  = rospy.Subscriber('/pad_velocity', PosesAndVelocities,callback_pa
 sub_quadstate =  rospy.Subscriber('/ground_truth/state', Odometry,callback_quad, queue_size = 10)
 pub_pos = rospy.Publisher('/command/pose',  PoseStamped, queue_size = 10)
 pub_vel = rospy.Publisher('/command/twist', TwistStamped, queue_size = 10)
+pub_vel_msg = rospy.Publisher('/cmd_vel', Twist, queue_size = 10)
+
 pos_goal_msg = PoseStamped()
-vel_goal_msg = TwistStamped()
+#vel_goal_msg = TwistStamped()
+vel_goal_msg = Twist()
 #time for planner to run 
 msg=rospy.wait_for_message("/pad_velocity",PosesAndVelocities, timeout=20)
 rospy.sleep(2)
@@ -155,10 +159,16 @@ while not rospy.is_shutdown():
         try:
             
             velocity = traj.get_velocity(t - t_init)
+            '''
             vel_goal_msg.twist.linear.x = velocity[0]
             vel_goal_msg.twist.linear.y = velocity[1]
             vel_goal_msg.twist.linear.z = velocity[2]
             vel_goal_msg.header.frame_id = 'world'
+            '''
+            velocity = traj.get_velocity(t - t_init)
+            vel_goal_msg.linear.x = velocity[0]
+            vel_goal_msg.linear.y = velocity[1]
+            vel_goal_msg.linear.z = velocity[2]
             
             position = traj.get_position(t- t_init)
             pos_goal_msg.header.frame_id = 'world'
@@ -167,7 +177,8 @@ while not rospy.is_shutdown():
             pos_goal_msg.pose.position.z = position[2]
             
             #print(pos_goal_msg)
-            pub_vel.publish(vel_goal_msg)
+            pub_vel_msg.publish(vel_goal_msg)
+            
             #pub_pos.publish(pos_goal_msg)
             print("sending command  ", t - t_init)
         except:
