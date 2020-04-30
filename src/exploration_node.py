@@ -31,21 +31,21 @@ if __name__ == '__main__':
   vel_goal_msg = Twist()
   
   pub = rospy.Publisher('/action/pose/goal', PoseActionGoal, queue_size=10)
-  pub_vel = rospy.Publisher('/cmd_vel', PoseActionGoal, queue_size=10)
+  pub_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
   
   vel_goal_msg.linear.x = 0
   vel_goal_msg.linear.y = 0
   vel_goal_msg.linear.z = 5
-  for i in range(50000):
+  for i in range(200000):
+    print(i)
     pub_vel.publish(vel_goal_msg)      
   
   counter = 0
   while not rospy.is_shutdown():
     try:
-        expected_vis_marker = rospy.wait_for_message("/visualization_marker", Marker, timeout=20)
+        expected_vis_marker = rospy.wait_for_message("/visualization_marker", Marker, timeout=5)
         rospy.loginfo("Marker found, Starting to track")
-        rospy.sleep(5)
-
+    
     except:
         goal_pose = PoseActionGoal()
         rospy.loginfo("Marker not found, Continuing Exploration")
