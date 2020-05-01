@@ -45,7 +45,7 @@ if __name__ == '__main__':
     try:
         expected_vis_marker = rospy.wait_for_message("/visualization_marker", Marker, timeout=5)
         rospy.loginfo("Marker found, Starting to track")
-    
+        break
     except:
         goal_pose = PoseActionGoal()
         rospy.loginfo("Marker not found, Continuing Exploration")

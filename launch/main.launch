@@ -15,17 +15,17 @@
   <node name="spawn_helipad" pkg="gazebo_ros" type="spawn_model"
       args="-file $(find bebop_gazebo)/models/marker3/model.sdf
          -model marker3 -sdf
-         -x 10.0
-         -y 1.0
+         -x -10.0
+         -y 10.0
          -z 0.3"
       respawn="false" output="screen"/>
-
+  <!--
   <node pkg="uav_landing" type="moving_helipad.py" name="moving_helipad" output="screen" >
-      <param name="x_vel" type="double" value="0.0" />
+      <param name="x_vel" type="double" value="2.0" />
       <param name="y_vel" type="double" value="2.0" />
       <param name="seconds_before_moving" type="double" value="2" />
   </node>
-
+  -->
   <include file = "$(find uav_landing)/launch/hector_helipad_individual.launch">
   </include>
 

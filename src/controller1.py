@@ -30,7 +30,7 @@ velf = [0, 0, 1]  # velocity
 accf = [0, 9.81, 0]  # acceleration
 
 # Define the duration:
-Tf = 0.05
+Tf = 1
 
 # Define the input limits:
 fmin = 5  #[m/s**2]
@@ -70,7 +70,9 @@ def gen_traj(pos0, vel0, acc0, posf, velf, accf):
     # Run the algorithm, and generate the trajectory.
     traj.generate(Tf)
     print("Trajectory Generated")
-    # Test input feasibility
+    # Test input feasibiliCTRL-C to quit
+
+
     inputsFeasible = traj.check_input_feasibility(fmin, fmax, wmax, minTimeSec)
     
     # Test whether we fly into the floor
@@ -120,7 +122,7 @@ def callback_pad(msg):
     t_init = rospy.get_time()
     #Can add a reasonsable condition for replanning trajectory
     counter = counter + 1
-    if(counter == 30):
+    if(counter > 0):
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
         counter = 0
     
@@ -147,15 +149,14 @@ pub_vel_msg = rospy.Publisher('/cmd_vel', Twist, queue_size = 10)
 pos_goal_msg = PoseStamped()
 #vel_goal_msg = TwistStamped()
 vel_goal_msg = Twist()
-#time for planner to run 
-msg=rospy.wait_for_message("/pad_velocity",PosesAndVelocities, timeout=20)
-rospy.sleep(2)
 
+msg = rospy.wait_for_message("/pad_velocity", PosesAndVelocities , timeout=5)
+#callback_pad(msg)
 
 while not rospy.is_shutdown():
-    #Generate Trajectories
+    #Generate Trajectories    
     t = rospy.get_time()
-    if (t-t_init > 0):
+    if (t-t_init < Tf):
         try:
             
             velocity = traj.get_velocity(t - t_init)
@@ -177,9 +178,9 @@ while not rospy.is_shutdown():
             pos_goal_msg.pose.position.z = position[2]
             
             #print(pos_goal_msg)
-            pub_vel_msg.publish(vel_goal_msg)
+            #pub_vel_msg.publish(vel_goal_msg)
             
-            #pub_pos.publish(pos_goal_msg)
+            pub_pos.publish(pos_goal_msg)
             print("sending command  ", t - t_init)
         except:
             print("Error")
