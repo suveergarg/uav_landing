@@ -30,7 +30,7 @@ velf = [0, 0, 1]  # velocity
 accf = [0, 9.81, 0]  # acceleration
 
 # Define the duration:
-Tf = 1
+Tf = 3
 
 # Define the input limits:
 fmin = 5  #[m/s**2]
@@ -122,26 +122,30 @@ def callback_pad(msg):
     t_init = rospy.get_time()
     #Can add a reasonsable condition for replanning trajectory
     counter = counter + 1
-    if(counter > 0):
+    if(counter > 0 and pos0[2] > 4): #Based on the assumption that trajectory generation kicks in when quadrotor altitude > 4
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
         counter = 0
+    elif(pos0[2] <= 4):
+        print('landing mode on')
     
 def callback_quad(msg):
     global pos0,vel0
     x=msg.pose.pose.position.x
     y=msg.pose.pose.position.y
     z=msg.pose.pose.position.z    
+    # print('pose information of quadrotor: ', x, y, z)
     pos0 = [x,y,z]
     vx =msg.twist.twist.linear.x
     vy =msg.twist.twist.linear.y
     vz =msg.twist.twist.linear.z
     vel0 = [vx, vy, vz]
-    
+ 
 
 
-sub_padstate  = rospy.Subscriber('/pad_velocity', PosesAndVelocities,callback_pad, queue_size = 10)
 #To be replaced by odom later on
-sub_quadstate =  rospy.Subscriber('/ground_truth/state', Odometry,callback_quad, queue_size = 10)
+sub_quadstate =  rospy.Subscriber('/ground_truth/state', Odometry, callback_quad, queue_size = 10)
+sub_padstate  = rospy.Subscriber('/pad_velocity', PosesAndVelocities, callback_pad, queue_size = 10)
+
 pub_pos = rospy.Publisher('/command/pose',  PoseStamped, queue_size = 10)
 pub_vel = rospy.Publisher('/command/twist', TwistStamped, queue_size = 10)
 pub_vel_msg = rospy.Publisher('/cmd_vel', Twist, queue_size = 10)
@@ -181,7 +185,7 @@ while not rospy.is_shutdown():
             #pub_vel_msg.publish(vel_goal_msg)
             
             pub_pos.publish(pos_goal_msg)
-            print("sending command  ", t - t_init)
+            # print("sending command  ", t - t_init)
         except:
             print("Error")
             continue
