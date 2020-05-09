@@ -37,8 +37,13 @@ if __name__ == '__main__':
   vel_goal_msg.linear.y = 0
   vel_goal_msg.linear.z = 5
   for i in range(200000):
-    print(i)
-    pub_vel.publish(vel_goal_msg)      
+    pub_vel.publish(vel_goal_msg) 
+    try:
+        expected_vis_marker = rospy.wait_for_message("/visualization_marker", Marker, timeout=5)
+        rospy.loginfo("Marker found, Starting to track")
+        break
+    except:
+        print(i)  
   
   counter = 0
   while not rospy.is_shutdown():

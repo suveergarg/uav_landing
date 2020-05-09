@@ -30,7 +30,7 @@ velf = [0, 0, 1]  # velocity
 accf = [0, 9.81, 0]  # acceleration
 
 # Define the duration:
-Tf = 3
+Tf = 5
 
 # Define the input limits:
 fmin = 5  #[m/s**2]
@@ -122,7 +122,7 @@ def callback_pad(msg):
     t_init = rospy.get_time()
     #Can add a reasonsable condition for replanning trajectory
     counter = counter + 1
-    if(counter > 0 and pos0[2] > 4): #Based on the assumption that trajectory generation kicks in when quadrotor altitude > 4
+    if(counter > 30 and pos0[2] > 4): #Based on the assumption that trajectory generation kicks in when quadrotor altitude > 4
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
         counter = 0
     elif(pos0[2] <= 4):
@@ -162,7 +162,7 @@ while not rospy.is_shutdown():
     t = rospy.get_time()
     if (t-t_init < Tf):
         try:
-            
+            print('t and t_init ', t, t_init)
             velocity = traj.get_velocity(t - t_init)
             '''
             vel_goal_msg.twist.linear.x = velocity[0]
@@ -181,11 +181,12 @@ while not rospy.is_shutdown():
             pos_goal_msg.pose.position.y = position[1]
             pos_goal_msg.pose.position.z = position[2]
             
-            #print(pos_goal_msg)
+            print(pos_goal_msg)
             #pub_vel_msg.publish(vel_goal_msg)
             
             pub_pos.publish(pos_goal_msg)
-            # print("sending command  ", t - t_init)
+            print("sending command  ", t - t_init)
+
         except:
             print("Error")
             continue
