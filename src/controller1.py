@@ -31,7 +31,7 @@ velf = [0, 0, 1]  # velocity
 accf = [0, 9.81, 0]  # acceleration
 
 # Define the duration:
-Tf = 3
+Tf = 0.5
 
 # Define the input limits:
 fmin = 5  #[m/s**2]
@@ -164,9 +164,7 @@ msg = rospy.wait_for_message("/pad_velocity", PosesAndVelocities , timeout=5)
 t_init = rospy.get_time()    
 gen_traj(pos0, vel0, acc0, posf, velf, accf)
 flag_publisher = rospy.Publisher('/pid_tuner',  Bool, queue_size = 10)
-flag=Bool()
-flag.data = True
-flag_publisher.publish(flag)
+
 
 '''
 Plotting Code
@@ -182,8 +180,14 @@ thrust = np.zeros([numPlotPoints, 1])
 ratesMagn = np.zeros([numPlotPoints,1])
 i = 0
 
+flag=Bool()
+flag.data = True
+
+for i in range(10):
+    flag_publisher.publish(flag)
+
 while not rospy.is_shutdown():
-    
+    flag_publisher.publish(flag)
     #Generate Trajectories
     t = rospy.get_time()
 
@@ -223,6 +227,7 @@ while not rospy.is_shutdown():
     else:
        #gen_traj(pos0, vel0, acc0, posf, velf, accf)
        #t_init = rospy.get_time()
+       
        break
    
 # Plotting Code
@@ -283,6 +288,10 @@ axThrust.set_title('Inputs')
 
 axThrust.set_ylim([min(fmin-1,min(thrust)), max(fmax+1,max(thrust))])
 axOmega.set_ylim([0, max(wmax+1,max(ratesMagn))])
+
+rospy.sleep(5)
+flag.data = False
+flag_publisher.publish(flag)
 
 plt.show()
 

@@ -8,8 +8,6 @@ Created on Fri May  8 17:46:47 2020
 
 from __future__ import print_function, division
 import quadrocoptertrajectory as quadtraj
-from tf_velocity_estimator.msg import PosesAndVelocities
-from tf_velocity_estimator.msg import Velocity
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import TwistStamped
 from geometry_msgs.msg import Twist
@@ -35,7 +33,7 @@ i=0
 
 def callback(msg):
     
-    global position,velocity,i 
+    global position, velocity, i, time, Record, flag 
     
     if(Record):
         
@@ -46,24 +44,47 @@ def callback(msg):
         velocity[i,0] = msg.twist.twist.linear.x
         velocity[i,1] = msg.twist.twist.linear.y
         velocity[i,2] = msg.twist.twist.linear.z
-    
+        time[i] = i
+        
         i = i+1
     
+    
+    if(flag):
+        print("Generating plots")
+        flag = False
+        Record = False
+        idx = time>0
+        time         = time[idx]
+        position     = position[idx, :] 
+        velocity     = velocity[idx, :] 
+        
+        plt.figure()
+        
+        plt.subplot(2,1,1)
+        plt.plot(time, position[:,0], 'r', time, position[:,1], 'g', time, position[:,2], 'b')
+        
+        plt.subplot(2,1,2)
+        plt.plot(time, velocity[:,0], 'r', time, velocity[:,1], 'g', time, velocity[:,2], 'b')
+        
+        time = np.zeros(numPlotPoints)
+        position = np.zeros([numPlotPoints, 3])
+        velocity = np.zeros([numPlotPoints, 3]) 
+        
+        plt.show()
 
 def callback_flag(msg):
+    global Record, flag
     if (msg.data == True):
         Record = True
     if (msg.data == False):
         flag = True
+    print("Received Message ", msg)
+    
         
-
 odometry_subscriber = rospy.Subscriber('/ground_truth/state' , Odometry, callback)
 flag_subscriber     = rospy.Subscriber('/pid_tuner',  Bool, callback_flag)
 
 import matplotlib.pyplot as plt
 
-while not rospy.is_shutdown():
-    
-    if(flag):
-        flag = False
-        figStates, axes = plt.subplots(3,1,sharex=True)
+while (True):
+    pass
