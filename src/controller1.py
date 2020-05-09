@@ -16,6 +16,7 @@ from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 import rospy
 from quadrocoptertrajectory import SingleAxisTrajectory
+from std_msgs.msg import Bool
 
 rospy.init_node('controller_minsnap_node')
 
@@ -30,7 +31,7 @@ velf = [0, 0, 1]  # velocity
 accf = [0, 9.81, 0]  # acceleration
 
 # Define the duration:
-Tf = 1
+Tf = 3
 
 # Define the input limits:
 fmin = 5  #[m/s**2]
@@ -93,7 +94,7 @@ def callback_pad(msg):
     latest_velocity = msg.latest_velocities 
     #print(type(msg.latest_poses))
     avg_x, avg_y, avg_z, avg_vx, avg_vy, avg_vz =0,0,0,0,0,0
-    delta_t = 0.2
+    delta_t = 0
 	
     for i in range(len(latest_poses)):
         avg_x = avg_x + latest_poses[i].pose.position.x 
@@ -119,12 +120,16 @@ def callback_pad(msg):
     velf = [avg_vx, avg_y, avg_z]
     
     
-    t_init = rospy.get_time()
+    
     #Can add a reasonsable condition for replanning trajectory
+    '''
+    t_init = rospy.get_time()
     counter = counter + 1
-    if(counter > 0):
+    if(counter ==  10):
+        print("generating new trajectory")
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
         counter = 0
+    '''
     
 def callback_quad(msg):
     global pos0,vel0
@@ -151,38 +156,133 @@ pos_goal_msg = PoseStamped()
 vel_goal_msg = Twist()
 
 msg = rospy.wait_for_message("/pad_velocity", PosesAndVelocities , timeout=5)
+
 #callback_pad(msg)
+t_init = rospy.get_time()    
+gen_traj(pos0, vel0, acc0, posf, velf, accf)
+flag_publisher = rospy.Publisher('/pid_tuner',  Bool, queue_size = 10)
+flag=Bool()
+flag.data = True
+flag_publisher.publish(flag)
+
+'''
+Plotting Code
+'''
+
+import numpy as np
+numPlotPoints = 100000
+time = np.zeros(numPlotPoints)
+position = np.zeros([numPlotPoints, 3])
+velocity = np.zeros([numPlotPoints, 3])
+acceleration = np.zeros([numPlotPoints, 3])
+thrust = np.zeros([numPlotPoints, 1])
+ratesMagn = np.zeros([numPlotPoints,1])
+i = 0
 
 while not rospy.is_shutdown():
-    #Generate Trajectories    
+    
+    #Generate Trajectories
     t = rospy.get_time()
-    if (t-t_init < Tf):
+
+    if(t-t_init < Tf):
         try:
+    
+            velocity_ = traj.get_velocity(t - t_init)
+            vel_goal_msg.linear.x = velocity_[0]
+            vel_goal_msg.linear.y = velocity_[1]
+            vel_goal_msg.linear.z = velocity_[2]
             
-            velocity = traj.get_velocity(t - t_init)
-            '''
-            vel_goal_msg.twist.linear.x = velocity[0]
-            vel_goal_msg.twist.linear.y = velocity[1]
-            vel_goal_msg.twist.linear.z = velocity[2]
-            vel_goal_msg.header.frame_id = 'world'
-            '''
-            velocity = traj.get_velocity(t - t_init)
-            vel_goal_msg.linear.x = velocity[0]
-            vel_goal_msg.linear.y = velocity[1]
-            vel_goal_msg.linear.z = velocity[2]
-            
-            position = traj.get_position(t- t_init)
+            position_ = traj.get_position(t- t_init)
             pos_goal_msg.header.frame_id = 'world'
-            pos_goal_msg.pose.position.x = position[0]
-            pos_goal_msg.pose.position.y = position[1]
-            pos_goal_msg.pose.position.z = position[2]
+            pos_goal_msg.pose.position.x = position_[0]
+            pos_goal_msg.pose.position.y = position_[1]
+            pos_goal_msg.pose.position.z = position_[2]
             
             #print(pos_goal_msg)
             #pub_vel_msg.publish(vel_goal_msg)
+
+            #Plotting Code
+            time[i]        = t - t_init
+            position[i, :] = traj.get_position(t - t_init)
+            velocity[i, :] = traj.get_velocity(t - t_init)
+            acceleration[i, :] = traj.get_acceleration(t - t_init)
+            thrust[i] = traj.get_thrust(t - t_init)
+            ratesMagn[i] = np.linalg.norm(traj.get_body_rates(t - t_init))
+            i = i + 1
+             
             
             pub_pos.publish(pos_goal_msg)
             print("sending command  ", t - t_init)
+            
         except:
             print("Error")
             continue
+        
+    else:
+       #gen_traj(pos0, vel0, acc0, posf, velf, accf)
+       #t_init = rospy.get_time()
+       break
+   
+# Plotting Code
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+ 
+
+# Removing Zero Index
+
+idx = time>0
+time         = time[idx]
+position     = position[idx, :] 
+velocity     = velocity[idx, :] 
+acceleration = acceleration[idx, :]  
+thrust       = thrust[idx] 
+ratesMagn    =  ratesMagn[idx]  
+
+
+figStates, axes = plt.subplots(3,1,sharex=True)
+gs = gridspec.GridSpec(6, 2)
+axPos = plt.subplot(gs[0:2, 0])
+axVel = plt.subplot(gs[2:4, 0])
+axAcc = plt.subplot(gs[4:6, 0])
+
+for ax,yvals in zip([axPos, axVel, axAcc], [position,velocity,acceleration]):
+    cols = ['r','g','b']
+    labs = ['x','y','z']
+    for i in range(3):
+        ax.plot(time,yvals[:,i],cols[i],label=labs[i])
+
+axPos.set_ylabel('Pos [m]')
+axVel.set_ylabel('Vel [m/s]')
+axAcc.set_ylabel('Acc [m/s^2]')
+axAcc.set_xlabel('Time [s]')
+axPos.legend()
+axPos.set_title('States')
+
+infeasibleAreaColour = [1,0.5,0.5]
+axThrust = plt.subplot(gs[0:3, 1])
+axOmega  = plt.subplot(gs[3:6, 1])
+axThrust.plot(time,thrust,'k', label='command')
+axThrust.plot([0,Tf],[fmin,fmin],'r--', label='fmin')
+axThrust.fill_between([0,Tf],[fmin,fmin],-1000,facecolor=infeasibleAreaColour, color=infeasibleAreaColour)
+axThrust.fill_between([0,Tf],[fmax,fmax], 1000,facecolor=infeasibleAreaColour, color=infeasibleAreaColour)
+axThrust.plot([0,Tf],[fmax,fmax],'r-.', label='fmax')
+
+axThrust.set_ylabel('Thrust [m/s^2]')
+axThrust.legend()
+
+axOmega.plot(time, ratesMagn,'k',label='command magnitude')
+axOmega.plot([0,Tf],[wmax,wmax],'r--', label='wmax')
+axOmega.fill_between([0,Tf],[wmax,wmax], 1000,facecolor=infeasibleAreaColour, color=infeasibleAreaColour)
+axOmega.set_xlabel('Time [s]')
+axOmega.set_ylabel('Body rates [rad/s]')
+axOmega.legend()
+
+axThrust.set_title('Inputs')
+
+axThrust.set_ylim([min(fmin-1,min(thrust)), max(fmax+1,max(thrust))])
+axOmega.set_ylim([0, max(wmax+1,max(ratesMagn))])
+
+plt.show()
+
+    
             
