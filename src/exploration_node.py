@@ -36,7 +36,8 @@ if __name__ == '__main__':
   vel_goal_msg.linear.x = 0
   vel_goal_msg.linear.y = 0
   vel_goal_msg.linear.z = 5
-  for i in range(200000):
+  for i in range(100000):
+    # print(i)
     pub_vel.publish(vel_goal_msg) 
     try:
         expected_vis_marker = rospy.wait_for_message("/visualization_marker", Marker, timeout=5)
