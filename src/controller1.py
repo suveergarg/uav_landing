@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Apr 21 20:27:59 2020
-
-@author: gsuveer
-"""
-
 from __future__ import print_function, division
 import quadrocoptertrajectory as quadtraj
 from tf_velocity_estimator.msg import PosesAndVelocities
@@ -20,9 +12,6 @@ from std_msgs.msg import Bool
 
 rospy.init_node('controller_minsnap_node')
 
-plot_controller = 0
-landing_mode_on = False
-last_goal = None
 # Define the trajectory starting state:
 pos0 = [0, 0, 2] #position
 vel0 = [0, 0, 0] #velocity
@@ -34,7 +23,7 @@ velf = [0, 0, 1]  # velocity
 accf = [0, 9.81, 0]  # acceleration
 
 # Define the duration:
-Tf = 0.5
+Tf = 1
 
 # Define the input limits:
 fmin = 5  #[m/s**2]
@@ -51,6 +40,10 @@ traj = quadtraj.RapidTrajectory(pos0, vel0, acc0, gravity)
 feasible = False
 counter  = 0
 
+landing_mode      = False
+landing_executed  = False
+landing_threshold = 5
+
 def gen_traj(pos0, vel0, acc0, posf, velf, accf):
     
     global traj
@@ -60,17 +53,6 @@ def gen_traj(pos0, vel0, acc0, posf, velf, accf):
     traj.set_goal_velocity(velf)
     traj.set_goal_acceleration(accf)
     
-    # Note: if you'd like to leave some states free, there are two options to 
-    # encode this. As exmample, we will be leaving the velocity in `x` (axis 0)
-    # free:
-    #
-    # Option 1: 
-    # traj.set_goal_velocity_in_axis(1,velf_y);
-    # traj.set_goal_velocity_in_axis(2,velf_z);
-    # 
-    # Option 2:
-    # traj.set_goal_velocity([None, velf_y, velf_z])
-     
     # Run the algorithm, and generate the trajectory.
     traj.generate(Tf)
     print("Trajectory Generated")
@@ -92,13 +74,13 @@ def gen_traj(pos0, vel0, acc0, posf, velf, accf):
 
 def callback_pad(msg):
     
-    global pos0, vel0, acc0, posf, velf, accf, t_init, counter, landing_mode_on, last_goal
+    global pos0, vel0, acc0, posf, velf, accf, t_init, counter
     latest_poses    = msg.latest_poses
     latest_velocity = msg.latest_velocities 
     #print(type(msg.latest_poses))
     avg_x, avg_y, avg_z, avg_vx, avg_vy, avg_vz =0,0,0,0,0,0
     delta_t = 0
-	
+    
     for i in range(len(latest_poses)):
         avg_x = avg_x + latest_poses[i].pose.position.x 
         avg_y = avg_y + latest_poses[i].pose.position.y
@@ -115,37 +97,24 @@ def callback_pad(msg):
     
     x = avg_x/len(latest_poses) + avg_vx*delta_t
     y = avg_y/len(latest_poses) + avg_vy*delta_t
-    z = avg_z/len(latest_poses) + avg_vz*delta_t
-
-    if not landing_mode_on:
-        z = 5
-    else:
-        print('last goal is : ', last_goal)
-        z = 0
-        x = last_goal[0][0]
-        y = last_goal[0][1]
-        avg_vx, avg_y, avg_z = last_goal[1]
-
-    # print(posf)
+    #z = avg_z/len(latest_poses) + avg_vz*delta_t
+    
+    z = landing_threshold
+    
     posf = [x, y, z]
     velf = [avg_vx, avg_y, avg_z]
-    last_goal = [posf, velf, accf]
-
     
+    velf = [0,0,0]
     
-    
-    #Can add a reasonsable condition for replanning trajectory
-    
-    # t_init = rospy.get_time()
-    # counter = counter + 1
-    # if(counter ==  10):
-    #     print("generating new trajectory")
-    #     gen_traj(pos0, vel0, acc0, posf, velf, accf)
-    #     counter = 0
+    counter = counter + 1 
+    if(counter>30):
+        counter= 0
+        t_init = rospy.get_time()
+        gen_traj(pos0, vel0, acc0, posf, velf, accf)
     
     
 def callback_quad(msg):
-    global pos0,vel0, landing_mode_on
+    global pos0,vel0, landing_threshold, landing_mode
     x=msg.pose.pose.position.x
     y=msg.pose.pose.position.y
     z=msg.pose.pose.position.z    
@@ -155,11 +124,14 @@ def callback_quad(msg):
     vy =msg.twist.twist.linear.y
     vz =msg.twist.twist.linear.z
     vel0 = [vx, vy, vz]
+    
+    if(abs(z-landing_threshold)<0.1 and landing_mode == False):
+        print("Landing mode == On")
+        landing_threshold = 0
+        landing_mode = True
 
-    if(z < 5):
-        landing_mode_on = True
-        print('landing mode on')
-
+    if(landing_mode == True and abs(z) < 0.5):
+        landing_executed = True
 
 #To be replaced by odom later on
 sub_quadstate =  rospy.Subscriber('/ground_truth/state', Odometry, callback_quad, queue_size = 10)
@@ -176,10 +148,9 @@ vel_goal_msg = Twist()
 msg = rospy.wait_for_message("/pad_velocity", PosesAndVelocities , timeout=5)
 
 #callback_pad(msg)
-# t_init = rospy.get_time()    
+t_init = rospy.get_time()    
 gen_traj(pos0, vel0, acc0, posf, velf, accf)
 flag_publisher = rospy.Publisher('/pid_tuner',  Bool, queue_size = 10)
-
 
 
 '''
@@ -202,11 +173,13 @@ flag.data = True
 for i in range(10):
     flag_publisher.publish(flag)
 
+delta_t=0.1
+
 while not rospy.is_shutdown():
     flag_publisher.publish(flag)
     #Generate Trajectories
     t = rospy.get_time()
-    # print('t and t_init ', t, t_init)
+
     if(t-t_init < Tf):
         try:
     
@@ -215,13 +188,13 @@ while not rospy.is_shutdown():
             vel_goal_msg.linear.y = velocity_[1]
             vel_goal_msg.linear.z = velocity_[2]
             
-            position_ = traj.get_position(t- t_init)
+            position_ = traj.get_position(t- t_init + delta_t)
             pos_goal_msg.header.frame_id = 'world'
             pos_goal_msg.pose.position.x = position_[0]
             pos_goal_msg.pose.position.y = position_[1]
             pos_goal_msg.pose.position.z = position_[2]
             
-            # print(pos_goal_msg)
+            #print(pos_goal_msg)
             #pub_vel_msg.publish(vel_goal_msg)
 
             #Plotting Code
@@ -235,16 +208,28 @@ while not rospy.is_shutdown():
              
             
             pub_pos.publish(pos_goal_msg)
-
+            
+            #Shut down the quadrotor if landing was executed
+            if(landing_executed == True):
+                print("Shutting Down Quadrotor")
+                vel_goal_msg.linear.x = 0
+                vel_goal_msg.linear.y = 0
+                vel_goal_msg.linear.z = 0
+                pub_vel_msg.publish(vel_goal_msg)
+                break
+                
         except:
             print("Error")
             continue
         
     else:
-       #gen_traj(pos0, vel0, acc0, posf, velf, accf)
-       #t_init = rospy.get_time()
-       
-       break
+       ''' 
+       t_init = rospy.get_time()
+       gen_traj(pos0, vel0, acc0, posf, velf, accf)
+       '''
+       i=0
+       pass
+       #break
    
 # Plotting Code
 import matplotlib.pyplot as plt
@@ -310,6 +295,3 @@ flag.data = False
 flag_publisher.publish(flag)
 
 plt.show()
-
-    
-            
