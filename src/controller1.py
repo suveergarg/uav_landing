@@ -95,12 +95,17 @@ def gen_traj(pos0, vel0, acc0, posf, velf, accf):
 
 def callback_pad(msg):
     
-    global pos0, vel0, acc0, posf, velf, accf, t_init, counter
+    global pos0, vel0, acc0, posf, velf, accf, t_init, counter, landing_mode, landing_executed
     latest_poses    = msg.latest_poses
     latest_velocity = msg.latest_velocities 
     #print(type(msg.latest_poses))
-    avg_x, avg_y, avg_z, avg_vx, avg_vy, avg_vz = 0,0,0,0,0,0
-    delta_t = 0
+
+    avg_x, avg_y, avg_z, avg_vx, avg_vy, avg_vz =0,0,0,0,0,0
+    
+    if(landing_mode == True):
+        delta_t=2
+    else: 
+        delta_t = 1
     
     for i in range(len(latest_poses)):
         avg_x = avg_x + latest_poses[i].pose.position.x 
@@ -128,7 +133,7 @@ def callback_pad(msg):
     # velf = [0,0,0]
     
     counter = counter + 1 
-    if(counter>50):
+    if( counter>50 and landing_executed == False ):
         counter= 0
         t_init = rospy.get_time()
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
@@ -258,6 +263,8 @@ while not rospy.is_shutdown():
        t_init = rospy.get_time()
        gen_traj(pos0, vel0, acc0, posf, velf, accf)
        '''
+       if(landing_executed == True):
+           break
        i=0
        #break
 
