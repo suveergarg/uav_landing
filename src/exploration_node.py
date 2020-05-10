@@ -49,11 +49,8 @@ if __name__ == '__main__':
         goal_pose.goal.target_pose.pose.position.y = exploration_waypoints[waypoint_index][1]
         goal_pose.goal.target_pose.pose.position.z = exploration_waypoints[waypoint_index][2]
         
-        if(counter == 30):
-            counter = 0
-            waypoint_index = (waypoint_index + 1)%4 
+        waypoint_index = (waypoint_index + 1)%4 
 
-        counter = counter+1
         #vel_goal_msg.linear.x = velocity[waypoint_index][0]
         #vel_goal_msg.linear.y = velocity[waypoint_index][1]
         #vel_goal_msg.linear.z = velocity[waypoint_index][2]
