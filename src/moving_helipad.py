@@ -28,8 +28,8 @@ def init():
     global model_name, model_state_pub, x_vel, y_vel, model_state_sub
     rospy.init_node('moving_helipad')
     model_name = rospy.get_param("~model_name", "marker3")
-    x_vel = rospy.get_param("~x_vel", 2.0)
-    y_vel = rospy.get_param("~y_vel", 2.0)
+    x_vel = rospy.get_param("~x_vel", 1.0)
+    y_vel = rospy.get_param("~y_vel", 1.0)
     seconds_before_moving = rospy.get_param("~seconds_before_moving", 10)
     rospy.sleep(seconds_before_moving)
     model_state_sub = rospy.Subscriber("gazebo/model_states", ModelStates, modelStatesCallback)
@@ -40,27 +40,30 @@ def init():
 def modelStatesCallback(msg):
     global model_name, model_state_pub, x_vel, y_vel, model_state_sub, waypoints_index,waypoints
     index_of_interest = -1
- #    for i in range(len(msg.name)):
- #        if msg.name[i] == model_name:
- #            index_of_interest = i
- #            break
- #    if index_of_interest >= 0:
- #        model_state = ModelState()
- #        model_state.model_name = model_name
- #        model_state.pose = msg.pose[index_of_interest]
- #        twist = Twist()
+    
+    for i in range(len(msg.name)):
+        if msg.name[i] == model_name:
+            index_of_interest = i
+            break
         
- #    '''
-	# if(model_state.pose.position.y>5 or model_state.pose.position.y<-5):
-	# 	y_vel = -1* y_vel
-
- #        twist.linear.x = x_vel
- #        twist.linear.y = y_vel
- #        if msg.twist[index_of_interest] != twist:
- #            model_state.twist = twist
- #            model_state_pub.publish(model_state)
- #    '''
- #    twist = Twist()
+    if index_of_interest >= 0:
+        model_state = ModelState()
+        model_state.model_name = model_name
+        model_state.pose = msg.pose[index_of_interest]
+        twist = Twist()
+       
+    
+        if(model_state.pose.position.y>15 or model_state.pose.position.y<-15):
+               y_vel = -1* y_vel
+      
+        twist.linear.x = x_vel
+        twist.linear.y = y_vel
+        if msg.twist[index_of_interest] != twist:
+            model_state.twist = twist
+            model_state_pub.publish(model_state)
+    
+    
+    twist = Twist()
     
     
     

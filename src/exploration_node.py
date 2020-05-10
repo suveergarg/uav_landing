@@ -33,25 +33,12 @@ if __name__ == '__main__':
   pub = rospy.Publisher('/action/pose/goal', PoseActionGoal, queue_size=10)
   pub_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
   
-  vel_goal_msg.linear.x = 0
-  vel_goal_msg.linear.y = 0
-  vel_goal_msg.linear.z = 5
-  for i in range(100000):
-    # print(i)
-    pub_vel.publish(vel_goal_msg) 
-    try:
-        expected_vis_marker = rospy.wait_for_message("/visualization_marker", Marker, timeout=5)
-        rospy.loginfo("Marker found, Starting to track")
-        break
-    except:
-        print(i)  
-  
   counter = 0
   while not rospy.is_shutdown():
     try:
-        expected_vis_marker = rospy.wait_for_message("/visualization_marker", Marker, timeout=5)
+        expected_vis_marker = rospy.wait_for_message("/visualization_marker", Marker, timeout=10)
         rospy.loginfo("Marker found, Starting to track")
-        break
+        #break
     except:
         goal_pose = PoseActionGoal()
         rospy.loginfo("Marker not found, Continuing Exploration")
@@ -67,15 +54,15 @@ if __name__ == '__main__':
             waypoint_index = (waypoint_index + 1)%4 
 
         counter = counter+1
-        vel_goal_msg.linear.x = velocity[waypoint_index][0]
-        vel_goal_msg.linear.y = velocity[waypoint_index][1]
-        vel_goal_msg.linear.z = velocity[waypoint_index][2]
-        pub_vel.publish(vel_goal_msg)      
+        #vel_goal_msg.linear.x = velocity[waypoint_index][0]
+        #vel_goal_msg.linear.y = velocity[waypoint_index][1]
+        #vel_goal_msg.linear.z = velocity[waypoint_index][2]
+        #pub_vel.publish(vel_goal_msg)      
 
 
-        #rospy.loginfo(goal_pose)
-        #rospy.loginfo(goal_pose.goal_id.stamp)
-        #pub.publish(goal_pose)
+        rospy.loginfo(goal_pose)
+        rospy.loginfo(goal_pose.goal_id.stamp)
+        pub.publish(goal_pose)
         #client.send_goal(goal_pose)
         #client.wait_for_result()
         
