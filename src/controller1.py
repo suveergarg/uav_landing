@@ -9,6 +9,7 @@ from nav_msgs.msg import Odometry
 import rospy
 from quadrocoptertrajectory import SingleAxisTrajectory
 from std_msgs.msg import Bool
+import subprocess
 
 rospy.init_node('controller_minsnap_node')
 
@@ -132,6 +133,7 @@ def callback_quad(msg):
 
     if(landing_mode == True and abs(z) < 0.5):
         landing_executed = True
+        ret = subprocess.call(['rosservice call /enable_motors "enable: false"'], shell=True)
 
 #To be replaced by odom later on
 sub_quadstate =  rospy.Subscriber('/ground_truth/state', Odometry, callback_quad, queue_size = 10)
