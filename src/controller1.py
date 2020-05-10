@@ -10,6 +10,7 @@ import rospy
 from quadrocoptertrajectory import SingleAxisTrajectory
 from std_msgs.msg import Bool
 import subprocess
+from plot import pidTuner, timeVsDist
 
 rospy.init_node('controller_minsnap_node')
 
@@ -43,7 +44,26 @@ counter  = 0
 
 landing_mode      = False
 landing_executed  = False
-landing_threshold = 5
+landing_threshold = 4
+
+timestampsList = []
+distanceFromGround = []
+
+def point_sqaure_collision(point, rect):
+    if(abs(point[2] - rect[2]) > 0.3):
+        return False
+    # print(point, rect)
+    rx = rect[0] - 2.5
+    ry = rect[1] + 2.5
+    rh, rw = 5, 5
+    px = point[0]
+    py = point[1]
+
+    if (px >= rx and px <= rx + rw and py >= ry and py <= ry + rh):
+        return True
+    # print('failing condition 2')
+    return False
+
 
 def gen_traj(pos0, vel0, acc0, posf, velf, accf):
     
@@ -79,7 +99,7 @@ def callback_pad(msg):
     latest_poses    = msg.latest_poses
     latest_velocity = msg.latest_velocities 
     #print(type(msg.latest_poses))
-    avg_x, avg_y, avg_z, avg_vx, avg_vy, avg_vz =0,0,0,0,0,0
+    avg_x, avg_y, avg_z, avg_vx, avg_vy, avg_vz = 0,0,0,0,0,0
     delta_t = 0
     
     for i in range(len(latest_poses)):
@@ -103,19 +123,21 @@ def callback_pad(msg):
     z = landing_threshold
     
     posf = [x, y, z]
-    velf = [avg_vx, avg_y, avg_z]
+    velf = [avg_vx, avg_vy, avg_vz]
     
-    velf = [0,0,0]
+    # velf = [0,0,0]
     
     counter = counter + 1 
-    if(counter>30):
+    if(counter>50):
         counter= 0
         t_init = rospy.get_time()
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
+        # print('latest velocity: ', latest_velocity)
+        print('posf and velf: ', posf, velf)
     
     
 def callback_quad(msg):
-    global pos0,vel0, landing_threshold, landing_mode
+    global pos0,vel0,posf, landing_threshold, landing_mode, landing_executed
     x=msg.pose.pose.position.x
     y=msg.pose.pose.position.y
     z=msg.pose.pose.position.z    
@@ -132,8 +154,12 @@ def callback_quad(msg):
         landing_mode = True
 
     if(landing_mode == True and abs(z) < 0.5):
+        # ret = point_sqaure_collision(pos0, posf)
         landing_executed = True
-        ret = subprocess.call(['rosservice call /enable_motors "enable: false"'], shell=True)
+        # print('landing_executed and point in square', landing_executed, ret)
+        
+
+
 
 #To be replaced by odom later on
 sub_quadstate =  rospy.Subscriber('/ground_truth/state', Odometry, callback_quad, queue_size = 10)
@@ -207,7 +233,9 @@ while not rospy.is_shutdown():
             thrust[i] = traj.get_thrust(t - t_init)
             ratesMagn[i] = np.linalg.norm(traj.get_body_rates(t - t_init))
             i = i + 1
-             
+            
+            timestampsList.append(t)
+            distanceFromGround.append(pos0[2]) 
             
             pub_pos.publish(pos_goal_msg)
             
@@ -218,6 +246,7 @@ while not rospy.is_shutdown():
                 vel_goal_msg.linear.y = 0
                 vel_goal_msg.linear.z = 0
                 pub_vel_msg.publish(vel_goal_msg)
+                ret = subprocess.call(['rosservice call /enable_motors "enable: false"'], shell=True)
                 break
                 
         except:
@@ -230,70 +259,9 @@ while not rospy.is_shutdown():
        gen_traj(pos0, vel0, acc0, posf, velf, accf)
        '''
        i=0
-       pass
        #break
-   
-# Plotting Code
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
- 
 
-# Removing Zero Index
-
-idx = time>0
-time         = time[idx]
-position     = position[idx, :] 
-velocity     = velocity[idx, :] 
-acceleration = acceleration[idx, :]  
-thrust       = thrust[idx] 
-ratesMagn    =  ratesMagn[idx]  
-
-
-figStates, axes = plt.subplots(3,1,sharex=True)
-gs = gridspec.GridSpec(6, 2)
-axPos = plt.subplot(gs[0:2, 0])
-axVel = plt.subplot(gs[2:4, 0])
-axAcc = plt.subplot(gs[4:6, 0])
-
-for ax,yvals in zip([axPos, axVel, axAcc], [position,velocity,acceleration]):
-    cols = ['r','g','b']
-    labs = ['x','y','z']
-    for i in range(3):
-        ax.plot(time,yvals[:,i],cols[i],label=labs[i])
-
-axPos.set_ylabel('Pos [m]')
-axVel.set_ylabel('Vel [m/s]')
-axAcc.set_ylabel('Acc [m/s^2]')
-axAcc.set_xlabel('Time [s]')
-axPos.legend()
-axPos.set_title('States')
-
-infeasibleAreaColour = [1,0.5,0.5]
-axThrust = plt.subplot(gs[0:3, 1])
-axOmega  = plt.subplot(gs[3:6, 1])
-axThrust.plot(time,thrust,'k', label='command')
-axThrust.plot([0,Tf],[fmin,fmin],'r--', label='fmin')
-axThrust.fill_between([0,Tf],[fmin,fmin],-1000,facecolor=infeasibleAreaColour, color=infeasibleAreaColour)
-axThrust.fill_between([0,Tf],[fmax,fmax], 1000,facecolor=infeasibleAreaColour, color=infeasibleAreaColour)
-axThrust.plot([0,Tf],[fmax,fmax],'r-.', label='fmax')
-
-axThrust.set_ylabel('Thrust [m/s^2]')
-axThrust.legend()
-
-axOmega.plot(time, ratesMagn,'k',label='command magnitude')
-axOmega.plot([0,Tf],[wmax,wmax],'r--', label='wmax')
-axOmega.fill_between([0,Tf],[wmax,wmax], 1000,facecolor=infeasibleAreaColour, color=infeasibleAreaColour)
-axOmega.set_xlabel('Time [s]')
-axOmega.set_ylabel('Body rates [rad/s]')
-axOmega.legend()
-
-axThrust.set_title('Inputs')
-
-axThrust.set_ylim([min(fmin-1,min(thrust)), max(fmax+1,max(thrust))])
-axOmega.set_ylim([0, max(wmax+1,max(ratesMagn))])
-
-rospy.sleep(5)
-flag.data = False
+timeVsDist(timestampsList, distanceFromGround)
+ret = pidTuner(time, position, velocity, acceleration, thrust, ratesMagn, Tf, fmin, fmax, wmax)
+flag.data = ret
 flag_publisher.publish(flag)
-
-plt.show()

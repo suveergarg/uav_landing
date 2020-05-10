@@ -22,7 +22,7 @@
   
   <node pkg="uav_landing" type="moving_helipad.py" name="moving_helipad" output="screen" >
       <param name="x_vel" type="double" value="0.0" />
-      <param name="y_vel" type="double" value="0.0" />
+      <param name="y_vel" type="double" value=".0" />
       <param name="seconds_before_moving" type="double" value="2" />
   </node>
   
@@ -62,9 +62,9 @@
   -->
 
   <!-- Node for Exploration -->
-  <!--
-  <node pkg="uav_landing" type="exploration_node.py" name="exploration_node" output="screen" />
-  -->
+  
+  <!-- <node pkg="uav_landing" type="exploration_node.py" name="exploration_node" output="screen" /> -->
+  
 
 
   <!-- estimate_pad_velocity -->
