@@ -31,7 +31,7 @@ velf = [0, 0, 1]  # velocity
 accf = [0, 9.81, 0]  # acceleration
 
 # Define the duration:
-Tf = 0.5
+Tf = 1
 
 # Define the input limits:
 fmin = 5  #[m/s**2]
@@ -48,6 +48,10 @@ traj = quadtraj.RapidTrajectory(pos0, vel0, acc0, gravity)
 feasible = False
 counter  = 0
 
+landing_mode      = False
+landing_executed  = False
+landing_threshold = 5
+
 def gen_traj(pos0, vel0, acc0, posf, velf, accf):
     
     global traj
@@ -57,17 +61,6 @@ def gen_traj(pos0, vel0, acc0, posf, velf, accf):
     traj.set_goal_velocity(velf)
     traj.set_goal_acceleration(accf)
     
-    # Note: if you'd like to leave some states free, there are two options to 
-    # encode this. As exmample, we will be leaving the velocity in `x` (axis 0)
-    # free:
-    #
-    # Option 1: 
-    # traj.set_goal_velocity_in_axis(1,velf_y);
-    # traj.set_goal_velocity_in_axis(2,velf_z);
-    # 
-    # Option 2:
-    # traj.set_goal_velocity([None, velf_y, velf_z])
-     
     # Run the algorithm, and generate the trajectory.
     traj.generate(Tf)
     print("Trajectory Generated")
@@ -114,26 +107,22 @@ def callback_pad(msg):
     y = avg_y/len(latest_poses) + avg_vy*delta_t
     #z = avg_z/len(latest_poses) + avg_vz*delta_t
     
-    z = 5
+    z = landing_threshold
     
     posf = [x, y, z]
     velf = [avg_vx, avg_y, avg_z]
     
+    velf = [0,0,0]
     
-    
-    #Can add a reasonsable condition for replanning trajectory
-    '''
-    t_init = rospy.get_time()
-    counter = counter + 1
-<<<<<<< HEAD
-    if(counter ==  10):
-        print("generating new trajectory")
+    counter = counter + 1 
+    if(counter>30):
+        counter= 0
+        t_init = rospy.get_time()
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
-        counter = 0
-    '''
+    
     
 def callback_quad(msg):
-    global pos0,vel0
+    global pos0,vel0, landing_threshold, landing_mode
     x=msg.pose.pose.position.x
     y=msg.pose.pose.position.y
     z=msg.pose.pose.position.z    
@@ -143,8 +132,14 @@ def callback_quad(msg):
     vy =msg.twist.twist.linear.y
     vz =msg.twist.twist.linear.z
     vel0 = [vx, vy, vz]
- 
+    
+    if(abs(z-landing_threshold)<0.1 and landing_mode == False):
+        print("Landing mode == On")
+        landing_threshold = 0
+        landing_mode = True
 
+    if(landing_mode == True and abs(z) < 0.5):
+        landing_executed = True
 
 #To be replaced by odom later on
 sub_quadstate =  rospy.Subscriber('/ground_truth/state', Odometry, callback_quad, queue_size = 10)
@@ -186,6 +181,8 @@ flag.data = True
 for i in range(10):
     flag_publisher.publish(flag)
 
+delta_t=0.1
+
 while not rospy.is_shutdown():
     flag_publisher.publish(flag)
     #Generate Trajectories
@@ -199,7 +196,7 @@ while not rospy.is_shutdown():
             vel_goal_msg.linear.y = velocity_[1]
             vel_goal_msg.linear.z = velocity_[2]
             
-            position_ = traj.get_position(t- t_init)
+            position_ = traj.get_position(t- t_init + delta_t)
             pos_goal_msg.header.frame_id = 'world'
             pos_goal_msg.pose.position.x = position_[0]
             pos_goal_msg.pose.position.y = position_[1]
@@ -219,16 +216,28 @@ while not rospy.is_shutdown():
              
             
             pub_pos.publish(pos_goal_msg)
-
+            
+            #Shut down the quadrotor if landing was executed
+            if(landing_executed == True):
+                print("Shutting Down Quadrotor")
+                vel_goal_msg.linear.x = 0
+                vel_goal_msg.linear.y = 0
+                vel_goal_msg.linear.z = 0
+                pub_vel_msg.publish(vel_goal_msg)
+                break
+                
         except:
             print("Error")
             continue
         
     else:
-       #gen_traj(pos0, vel0, acc0, posf, velf, accf)
-       #t_init = rospy.get_time()
-       
-       break
+       ''' 
+       t_init = rospy.get_time()
+       gen_traj(pos0, vel0, acc0, posf, velf, accf)
+       '''
+       i=0
+       pass
+       #break
    
 # Plotting Code
 import matplotlib.pyplot as plt
