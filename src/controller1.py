@@ -10,7 +10,7 @@ import rospy
 from quadrocoptertrajectory import SingleAxisTrajectory
 from std_msgs.msg import Bool
 import subprocess
-from plot import pidTuner, timeVsDist
+from plot import pidTuner, timeVsDist, trajectory3D
 
 rospy.init_node('controller_minsnap_node')
 
@@ -48,6 +48,7 @@ landing_threshold = 4
 
 timestampsList = []
 distanceFromGround = []
+xline, yline = [], []
 
 def point_sqaure_collision(point, rect):
     if(abs(point[2] - rect[2]) > 0.3):
@@ -241,7 +242,9 @@ while not rospy.is_shutdown():
             
             timestampsList.append(t)
             distanceFromGround.append(pos0[2]) 
-            
+            xline.append(pos0[0])
+            yline.append(pos0[1])
+
             pub_pos.publish(pos_goal_msg)
             
             #Shut down the quadrotor if landing was executed
@@ -269,6 +272,7 @@ while not rospy.is_shutdown():
        #break
 
 timeVsDist(timestampsList, distanceFromGround)
+trajectory3D(xline, yline, distanceFromGround)
 ret = pidTuner(time, position, velocity, acceleration, thrust, ratesMagn, Tf, fmin, fmax, wmax)
 flag.data = ret
 flag_publisher.publish(flag)

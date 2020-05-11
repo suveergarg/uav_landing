@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.gridspec as gridspec
 import rospy
 import numpy as np
@@ -72,4 +73,15 @@ def timeVsDist(time, dist):
     plt.xlabel('time')
     plt.ylabel('Distance from ground(m)')
     plt.savefig('timeVsDist.png')
+    plt.title('time vs z plot')
     print('exiting time dist graph')
+
+def trajectory3D(xline, yline, zline):
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+    plt.title('3D Trajectory')
+    ax.plot3D(xline, yline, zline, 'gray')
+    fig.savefig('3dtrajectory.png')

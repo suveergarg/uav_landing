@@ -40,15 +40,12 @@ def init():
 def modelStatesCallback(msg):
     global model_name, model_state_pub, x_vel, y_vel, model_state_sub, waypoints_index,waypoints
     index_of_interest = -1
-<<<<<<< HEAD
-=======
-    
->>>>>>> e083c2e34ed73dce429937896c4dddc13e6e2284
+
     for i in range(len(msg.name)):
         if msg.name[i] == model_name:
             index_of_interest = i
             break
-<<<<<<< HEAD
+
     if index_of_interest >= 0:
         model_state = ModelState()
         model_state.model_name = model_name
@@ -79,10 +76,7 @@ def modelStatesCallback(msg):
             model_state_pub.publish(model_state)
 <<<<<<< HEAD
     '''
-=======
-    
-    
->>>>>>> e083c2e34ed73dce429937896c4dddc13e6e2284
+
     twist = Twist()
     
     
