@@ -112,13 +112,13 @@ Run the main node with
 ## Results
 
 Results for the trajectory generated for the following tasks - 
--  Landing on Stationary platform
+#### Landing on Stationary platform
 <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_stationary.png" width="400" alt="stationary" class="center"></p>
 
--  Landing on Moving Platform
-     - To and Fro Motion
+#### Landing on Moving Platform
+     ##### To and Fro Motion
    	<p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="400" alt="straight" class="center"></p>
-     - Motion in Square Perimeter
+     ##### Motion in Square Perimeter
      <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" width="400" alt="square" class="center"></p>
 
 
