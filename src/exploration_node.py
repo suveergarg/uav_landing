@@ -22,6 +22,13 @@ waypoint_index        = 0
     
 
 if __name__ == '__main__':
+
+  '''
+    
+  Node for setting waypoints for exploration of the quadrotor.
+  Exits when marker or pad is found.
+    
+  '''
   rospy.init_node('exploration_node')
   client = actionlib.SimpleActionClient('/action/pose', PoseAction)
   rospy.loginfo("Waiting for Server")
@@ -51,15 +58,6 @@ if __name__ == '__main__':
         
         waypoint_index = (waypoint_index + 1)%4 
 
-        #vel_goal_msg.linear.x = velocity[waypoint_index][0]
-        #vel_goal_msg.linear.y = velocity[waypoint_index][1]
-        #vel_goal_msg.linear.z = velocity[waypoint_index][2]
-        #pub_vel.publish(vel_goal_msg)      
-
-
         rospy.loginfo(goal_pose)
         rospy.loginfo(goal_pose.goal_id.stamp)
         pub.publish(goal_pose)
-        #client.send_goal(goal_pose)
-        #client.wait_for_result()
-        

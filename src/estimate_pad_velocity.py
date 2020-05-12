@@ -1,3 +1,8 @@
+'''
+Node for estimation and publishing pad velocities and positions
+
+'''
+
 #!/usr/bin/env python
 import tf
 import rospy
@@ -16,6 +21,12 @@ sliding_window_sz = 0
 latest_common_time = None
 
 def init():
+    
+    '''
+    
+    Initialise function to set up appropriate subscribers and publishers
+    
+    '''
     global targeted_tf, tf_, sliding_window_sz
     global p_v_pub, latest_common_time
     rospy.init_node('estimate_pad_velocity')
@@ -29,6 +40,14 @@ def init():
         rospy.spin()
 
 def tf_callback(tf2):
+    '''
+    Parameters
+    ----------
+    tf2 : Tf Message, callback for the tf topic
+    
+    Calculates transform of the pad in the world frame and publishes velocity on /pad_velocities topic 
+
+    '''
     global targeted_tf, tf_
     global sliding_window_sz, sliding_window, sliding_window_v
     global p_v_pub, latest_common_time
