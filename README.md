@@ -107,21 +107,23 @@ Run the main node with
 * **`/pid_tuner `** ([std_msgs /Bool   ])
 	Informs pid when to start/stop recording the trajectory being generated
 
-<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="500" alt="rqt_graph" class="center"></div>
+<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="800" alt="rqt_graph" class="center"></div>
 
-<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="400" alt="straight" class="center"></div>
+## Results
 
-<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_stationary.png" width="400" alt="stationary" class="center"></div>
+Results for the trajectory generated for the following tasks - 
+-  Landing on Stationary platform
+-  Landing on Moving Platform
+     - Linear Motion
+     - Back and Forth Motion
+     - Motion in Square Perimeter
 
-<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" width="400" alt="square" class="center"></div>
+<p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="400" alt="straight" class="center"></p>
+
+<p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_stationary.png" width="400" alt="stationary" class="center"></p>
+
+<p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" width="400" alt="square" class="center"></p>
 
 ## Bugs & Feature Requests
 
 Please report bugs and request features using the [Issue Tracker](https://github.com/ethz-asl/ros_best_practices/issues).
-
-
-[ROS]: http://www.ros.org
-[rviz]: http://wiki.ros.org/rviz
-[Eigen]: http://eigen.tuxfamily.org
-[std_srvs/Trigger]: http://docs.ros.org/api/std_srvs/html/srv/Trigger.html
-[sensor_msgs/Temperature]: http://docs.ros.org/api/sensor_msgs/html/msg/Temperature.html
