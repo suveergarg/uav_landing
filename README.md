@@ -6,8 +6,6 @@ The project creates an Unmanned Autonomous Vehicle (UAV) capable of landing on s
 
 **Keywords:** moving target, stationary target, landing
 
-[![transforms](transforms "transforms")](https://github.com/suveergarg/uav_landing/blob/master/frames.pdf "transforms")
-
 #### Dependencies
 
 - [Robot Operating System (ROS)](http://wiki.ros.org) (middleware for robotics),
