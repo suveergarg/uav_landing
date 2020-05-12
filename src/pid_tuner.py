@@ -1,3 +1,7 @@
+'''
+Node for recording the response of the PID controller
+
+'''
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
@@ -32,6 +36,12 @@ velocity = np.zeros([numPlotPoints, 3])
 i=0
 
 def callback(msg):
+    
+    '''
+    
+    Callback funtion for Recording Ground Truth Values of the Quadrotor from Gazebo.
+    
+    '''
     
     global position, velocity, i, time, Record, flag 
     
@@ -73,6 +83,13 @@ def callback(msg):
         plt.show()
 
 def callback_flag(msg):
+    
+    '''
+    
+    Callback function to decide when to start / stop recording after the trajectory has been generated
+    
+    '''
+    
     global Record, flag
     if (msg.data == True):
         Record = True

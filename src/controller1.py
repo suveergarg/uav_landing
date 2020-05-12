@@ -11,7 +11,11 @@ from quadrocoptertrajectory import SingleAxisTrajectory
 from std_msgs.msg import Bool
 import subprocess
 from plot import pidTuner, timeVsDist, trajectory3D
+'''
 
+Node for dynamic computation of minimum snap trajectory and sending position goals to PI position controller
+
+'''
 rospy.init_node('controller_minsnap_node')
 
 # Define the trajectory starting state:
@@ -51,6 +55,13 @@ distanceFromGround = []
 xline, yline = [], []
 
 def point_sqaure_collision(point, rect):
+    '''
+    
+    Check for landing on the pad 
+    
+    Returns: Bool
+    
+    '''
     if(abs(point[2] - rect[2]) > 0.3):
         return False
     # print(point, rect)
@@ -62,11 +73,14 @@ def point_sqaure_collision(point, rect):
 
     if (px >= rx and px <= rx + rw and py >= ry and py <= ry + rh):
         return True
-    # print('failing condition 2')
     return False
 
 
 def gen_traj(pos0, vel0, acc0, posf, velf, accf):
+    
+    '''
+    Based on initial and final position, velocity and acceleration to generate a time stamped trajectory
+    '''
     
     global traj
     
@@ -78,8 +92,6 @@ def gen_traj(pos0, vel0, acc0, posf, velf, accf):
     # Run the algorithm, and generate the trajectory.
     traj.generate(Tf)
     print("Trajectory Generated")
-    # Test input feasibiliCTRL-C to quit
-
 
     inputsFeasible = traj.check_input_feasibility(fmin, fmax, wmax, minTimeSec)
     
@@ -96,11 +108,15 @@ def gen_traj(pos0, vel0, acc0, posf, velf, accf):
 
 def callback_pad(msg):
     
+    '''
+    
+    Callback to read pad velocity and set the final/goal position, velocity and acceleration
+    
+    '''
+    
     global pos0, vel0, acc0, posf, velf, accf, t_init, counter, landing_mode, landing_executed
     latest_poses    = msg.latest_poses
     latest_velocity = msg.latest_velocities 
-    #print(type(msg.latest_poses))
-
     avg_x, avg_y, avg_z, avg_vx, avg_vy, avg_vz =0,0,0,0,0,0
     
     if(landing_mode == True):
@@ -116,38 +132,36 @@ def callback_pad(msg):
         avg_vy = avg_vy + latest_velocity[i].vy
         avg_vz = avg_vz + latest_velocity[i].vz
 
-    #delta_t = goal_msg.header.stamp.secs  - latest_poses[i].header.stamp.secs
-    
     avg_vx = avg_vx/len(latest_poses)
     avg_vy = avg_vy/len(latest_poses)
     avg_vz = avg_vz/len(latest_poses)
     
     x = avg_x/len(latest_poses) + avg_vx*delta_t
     y = avg_y/len(latest_poses) + avg_vy*delta_t
-    #z = avg_z/len(latest_poses) + avg_vz*delta_t
     
     z = landing_threshold
     
     posf = [x, y, z]
     velf = [avg_vx, avg_vy, avg_vz]
-    
-    # velf = [0,0,0]
-    
+        
     counter = counter + 1 
     if( counter>100 and landing_executed == False ):
         counter= 0
         t_init = rospy.get_time()
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
-        # print('latest velocity: ', latest_velocity)
         print('posf and velf: ', posf, velf)
     
     
 def callback_quad(msg):
+    '''
+    
+    Callback from setting inital position and velocity from ground truth quadrotor states
+    
+    '''
     global pos0,vel0,posf, landing_threshold, landing_mode, landing_executed
     x=msg.pose.pose.position.x
     y=msg.pose.pose.position.y
     z=msg.pose.pose.position.z    
-    # print('pose information of quadrotor: ', x, y, z)
     pos0 = [x,y,z]
     vx =msg.twist.twist.linear.x
     vy =msg.twist.twist.linear.y
@@ -160,28 +174,20 @@ def callback_quad(msg):
         landing_mode = True
 
     if(landing_mode == True and abs(z) < 0.5):
-        # ret = point_sqaure_collision(pos0, posf)
         landing_executed = True
-        # print('landing_executed and point in square', landing_executed, ret)
         
 
-
-
-#To be replaced by odom later on
 sub_quadstate =  rospy.Subscriber('/ground_truth/state', Odometry, callback_quad, queue_size = 10)
 sub_padstate  = rospy.Subscriber('/pad_velocity', PosesAndVelocities, callback_pad, queue_size = 10)
-
 pub_pos = rospy.Publisher('/command/pose',  PoseStamped, queue_size = 10)
 pub_vel = rospy.Publisher('/command/twist', TwistStamped, queue_size = 10)
 pub_vel_msg = rospy.Publisher('/cmd_vel', Twist, queue_size = 10)
 
 pos_goal_msg = PoseStamped()
-#vel_goal_msg = TwistStamped()
 vel_goal_msg = Twist()
 
 msg = rospy.wait_for_message("/pad_velocity", PosesAndVelocities , timeout=5)
 
-#callback_pad(msg)
 t_init = rospy.get_time()    
 gen_traj(pos0, vel0, acc0, posf, velf, accf)
 flag_publisher = rospy.Publisher('/pid_tuner',  Bool, queue_size = 10)
@@ -228,9 +234,6 @@ while not rospy.is_shutdown():
             pos_goal_msg.pose.position.y = position_[1]
             pos_goal_msg.pose.position.z = position_[2]
             
-            #print(pos_goal_msg)
-            #pub_vel_msg.publish(vel_goal_msg)
-
             #Plotting Code
             time[i]        = t - t_init
             position[i, :] = traj.get_position(t - t_init)
@@ -254,7 +257,7 @@ while not rospy.is_shutdown():
                 vel_goal_msg.linear.y = 0
                 vel_goal_msg.linear.z = 0
                 pub_vel_msg.publish(vel_goal_msg)
-                #ret = subprocess.call(['rosservice call /enable_motors "enable: false"'], shell=True)
+                ret = subprocess.call(['rosservice call /enable_motors "enable: false"'], shell=True)
                 break
                 
         except:
@@ -262,14 +265,9 @@ while not rospy.is_shutdown():
             continue
         
     else:
-       ''' 
-       t_init = rospy.get_time()
-       gen_traj(pos0, vel0, acc0, posf, velf, accf)
-       '''
        if(landing_executed == True):
            break
        i=0
-       #break
 
 timeVsDist(timestampsList, distanceFromGround)
 trajectory3D(xline, yline, distanceFromGround)
