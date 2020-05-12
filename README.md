@@ -114,20 +114,21 @@ Run the main node with
 Results for the trajectory generated for the following tasks - 
 #### Landing on Stationary platform
 <video width="320" height="240" controls>
-  <source src="https://github.com/suveergarg/uav_landing/blob/master/videos/stationary.mp4" type="video/mp4">
+<source src="https://github.com/suveergarg/uav_landing/blob/master/videos/stationary.mp4" type="video/mp4">
 </video>
 
 <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_stationary.png" width="400" alt="stationary" class="center"></p>
 
 #### Landing on Moving Platform
-   ###### To and Fro Motion
-   <video width="320" height="240" controls>
-  	<source src="https://github.com/suveergarg/uav_landing/blob/master/videos/straight.mp4" type="video/mp4">
-   </video>
+###### To and Fro Motion
+<video width="320" height="240" controls>
+<source src="https://github.com/suveergarg/uav_landing/blob/master/videos/straight.mp4" type="video/mp4">
+</video>
    
-   <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="400" alt="straight" class="center"></p>
-   ###### Motion in Square Perimeter
-   <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" width="400" alt="square" class="center"></p>
+<p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="400" alt="straight" class="center"></p>
+
+###### Motion in Square Perimeter
+<p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" width="400" alt="square" class="center"></p>
 
 
 
