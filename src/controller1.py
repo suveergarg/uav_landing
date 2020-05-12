@@ -120,9 +120,9 @@ def callback_pad(msg):
     avg_x, avg_y, avg_z, avg_vx, avg_vy, avg_vz =0,0,0,0,0,0
     
     if(landing_mode == True):
-        delta_t=2
+        delta_t=1
     else: 
-        delta_t = 1
+        delta_t = 0
     
     for i in range(len(latest_poses)):
         avg_x = avg_x + latest_poses[i].pose.position.x 
@@ -143,14 +143,21 @@ def callback_pad(msg):
     
     posf = [x, y, z]
     velf = [avg_vx, avg_vy, avg_vz]
+<<<<<<< HEAD
         
+=======
+    
+>>>>>>> 8c329ab2c31568c63b536945ac78616c01300bd4
     counter = counter + 1 
     if( counter>100 and landing_executed == False ):
         counter= 0
         t_init = rospy.get_time()
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
+<<<<<<< HEAD
         print('posf and velf: ', posf, velf)
     
+=======
+>>>>>>> 8c329ab2c31568c63b536945ac78616c01300bd4
     
 def callback_quad(msg):
     '''
