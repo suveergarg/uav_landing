@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from __future__ import print_function, division
 import quadrocoptertrajectory as quadtraj
 from tf_velocity_estimator.msg import PosesAndVelocities

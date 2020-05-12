@@ -1,9 +1,8 @@
+#!/usr/bin/env python
 '''
 Node for estimation and publishing pad velocities and positions
 
 '''
-
-#!/usr/bin/env python
 import tf
 import rospy
 from tf import TransformListener

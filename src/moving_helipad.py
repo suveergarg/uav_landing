@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''
 
 Node for controlling the movement of the Landing Pad
@@ -5,7 +6,7 @@ Node for controlling the movement of the Landing Pad
 author: gsuveer, poojaconsul
 
 '''
-#!/usr/bin/env python
+
 import rospy
 from geometry_msgs.msg import Twist
 from gazebo_msgs.msg import ModelState
@@ -82,7 +83,7 @@ def modelStatesCallback(msg):
             model_state.twist = twist
             model_state_pub.publish(model_state)
     '''
-
+    '''
     if(abs(model_state.pose.position.x - waypoints[waypoints_index][0]) < 0.1 and abs(model_state.pose.position.y - waypoints[waypoints_index][1])<0.1):
         waypoints_index = (waypoints_index + 1) % 4
         if(waypoints[waypoints_index][0] - waypoints[waypoints_index-1][0] == 0):
@@ -109,6 +110,7 @@ def modelStatesCallback(msg):
         twist.linear.y = yvel[waypoints_index]
         model_state.twist = twist
         model_state_pub.publish(model_state)
-
+    '''
+    
 if __name__ == '__main__':
     init()
