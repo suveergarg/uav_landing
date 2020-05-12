@@ -69,7 +69,7 @@ def callback(msg):
         time = np.zeros(numPlotPoints)
         position = np.zeros([numPlotPoints, 3])
         velocity = np.zeros([numPlotPoints, 3]) 
-        
+        plt.savefig('singleTrajectory.png')
         plt.show()
 
 def callback_flag(msg):
