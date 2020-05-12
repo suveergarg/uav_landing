@@ -107,6 +107,13 @@ Run the main node with
 * **`/pid_tuner `** ([std_msgs /Bool   ])
 	Informs pid when to start/stop recording the trajectory being generated
 
+<div style="text-align:center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="300" alt="simulaion world" class="center"></div>
+
+<div style="text-align:center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="300" alt="simulaion world" class="center"></div>
+
+<div style="text-align:center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_stationary.png" class="center"></div>
+
+<div style="text-align:center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" class="center"></div>
 
 ## Bugs & Feature Requests
 
