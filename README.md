@@ -107,23 +107,27 @@ Run the main node with
 * **`/pid_tuner `** ([std_msgs /Bool   ])
 	Informs pid when to start/stop recording the trajectory being generated
 
-<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="800" alt="rqt_graph" class="center"></div>
+<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="1200" alt="rqt_graph" class="center"></div>
 
 ## Results
 
 Results for the trajectory generated for the following tasks - 
 #### Landing on Stationary platform
+<video width="320" height="240" controls>
+  <source src="https://github.com/suveergarg/uav_landing/blob/master/videos/stationary.mp4" type="video/mp4">
+</video>
+
 <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_stationary.png" width="400" alt="stationary" class="center"></p>
 
 #### Landing on Moving Platform
-     ##### To and Fro Motion
-   	<p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="400" alt="straight" class="center"></p>
-     ##### Motion in Square Perimeter
-     <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" width="400" alt="square" class="center"></p>
-
-
-
-
+   ###### To and Fro Motion
+   <video width="320" height="240" controls>
+  	<source src="https://github.com/suveergarg/uav_landing/blob/master/videos/straight.mp4" type="video/mp4">
+   </video>
+   
+   <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="400" alt="straight" class="center"></p>
+   ###### Motion in Square Perimeter
+   <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" width="400" alt="square" class="center"></p>
 
 
 
