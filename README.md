@@ -133,4 +133,4 @@ Results for the trajectory generated for the following tasks -
 
 ## Bugs & Feature Requests
 
-Please report bugs and request features using the [Issue Tracker](https://github.com/ethz-asl/ros_best_practices/issues).
+Please report bugs and request features using the [Issue Tracker](https://github.com/suveergarg/uav_landing/issues).
