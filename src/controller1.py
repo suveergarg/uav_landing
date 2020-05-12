@@ -44,7 +44,7 @@ counter  = 0
 
 landing_mode      = False
 landing_executed  = False
-landing_threshold = 4
+landing_threshold = 5
 
 timestampsList = []
 distanceFromGround = []
@@ -132,7 +132,7 @@ def callback_pad(msg):
     velf = [avg_vx, avg_vy, avg_vz]
     
     counter = counter + 1 
-    if( counter>50 and landing_executed == False ):
+    if( counter>100 and landing_executed == False ):
         counter= 0
         t_init = rospy.get_time()
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
@@ -249,7 +249,7 @@ while not rospy.is_shutdown():
                 vel_goal_msg.linear.y = 0
                 vel_goal_msg.linear.z = 0
                 pub_vel_msg.publish(vel_goal_msg)
-                ret = subprocess.call(['rosservice call /enable_motors "enable: false"'], shell=True)
+                #ret = subprocess.call(['rosservice call /enable_motors "enable: false"'], shell=True)
                 break
                 
         except:
