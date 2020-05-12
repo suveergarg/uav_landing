@@ -110,7 +110,7 @@ Run the main node with
 * **`/pid_tuner `** ([std_msgs /Bool   ])
 	Informs pid when to start/stop recording the trajectory being generated
 
-<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="1800" alt="rqt_graph" class="center"></div>
+<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="2500" alt="rqt_graph" class="center"></div>
 
 ## Results
 
@@ -130,9 +130,6 @@ Results for the trajectory generated for the following tasks -
 [Landing Video](https://github.com/suveergarg/uav_landing/blob/master/videos/sqaure%20motion.webm)
 <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" width="400" alt="square" class="center"></p>
 
-<video width="320" height="200" controls preload> 
-    <source src="https://github.com/suveergarg/uav_landing/blob/master/videos/sqaure%20motion.webm"></source> 
-</video>
 
 ## Bugs & Feature Requests
 
