@@ -4,7 +4,7 @@
 
 The project creates an Unmanned Autonomous Vehicle (UAV) capable of landing on stationary and moving target. The UAV is maneuvered through a controller and has the ability to optimally track, detect and land on the target. 
 
-<img src="https://github.com/suveergarg/uav_landing/blob/master/images/simulated-world.png" width="800" alt="simulaion world" class="center">
+<img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/simulated-world.png" width="800" alt="simulaion world" class="center">
 
 **Keywords:** moving target, stationary target, landing
 
@@ -107,13 +107,13 @@ Run the main node with
 * **`/pid_tuner `** ([std_msgs /Bool   ])
 	Informs pid when to start/stop recording the trajectory being generated
 
-<div style="text-align:center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="300" alt="simulaion world" class="center"></div>
+<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="500" alt="rqt_graph" class="center"></div>
 
-<div style="text-align:center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="300" alt="simulaion world" class="center"></div>
+<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="400" alt="straight" class="center"></div>
 
-<div style="text-align:center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_stationary.png" class="center"></div>
+<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_stationary.png" width="400" alt="stationary" class="center"></div>
 
-<div style="text-align:center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" class="center"></div>
+<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" width="400" alt="square" class="center"></div>
 
 ## Bugs & Feature Requests
 
