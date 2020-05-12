@@ -116,17 +116,18 @@ Run the main node with
 
 Results for the trajectory generated for the following tasks - 
 #### Landing on Stationary platform
-<img src="https://github.com/suveergarg/uav_landing/blob/master/videos/stationary.mp4" width="200">
+[Landing Video](https://github.com/suveergarg/uav_landing/blob/master/videos/stationary.mp4)
 
 <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_stationary.png" width="400" alt="stationary" class="center"></p>
 
 #### Landing on Moving Platform
 ###### To and Fro Motion
-<img src="https://github.com/suveergarg/uav_landing/blob/master/videos/straight.mp4" width="200">
+[Landing Video](https://github.com/suveergarg/uav_landing/blob/master/videos/straight.mp4)
    
 <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_straight.png" width="400" alt="straight" class="center"></p>
 
 ###### Motion in Square Perimeter
+[Landing Video](https://github.com/suveergarg/uav_landing/blob/master/videos/sqaure%20motion.webm)
 <p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/3dtrajectory_Sq_1mpers.png" width="400" alt="square" class="center"></p>
 
 
