@@ -2,9 +2,9 @@
 
 ## Overview
 
-The project creates an Unmanned Autonomous Vehicle (UAV) capable of landing on stationary and moving target. The UAV is maneuvered through a controller and has the ability to optimally track, detect and land on the target. 
+The project creates an Unmanned Autonomous Vehicle (UAV) capable of landing on stationary and moving target. The UAV is maneuvered through a controller and has the ability to optimally track, detect and land on the target.
 
-<img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/simulated-world.png" width="800" alt="simulaion world" class="center">
+<p align="center"><img src="https://github.com/suveergarg/uav_landing/blob/master/images/simulated-world.png" width="800" alt="simulaion world" class="center"></p>
 
 **Keywords:** moving target, stationary target, landing
 
@@ -110,7 +110,7 @@ Run the main node with
 * **`/pid_tuner `** ([std_msgs /Bool   ])
 	Informs pid when to start/stop recording the trajectory being generated
 
-<div style="text-align:center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="4000" alt="rqt_graph" class="center"></div>
+<p align="center"><img align="center" src="https://github.com/suveergarg/uav_landing/blob/master/images/rosgraph.png" width="4000" alt="rqt_graph" class="center"></p>
 
 ## Results
 
