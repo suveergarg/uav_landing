@@ -14,7 +14,7 @@ from plot import pidTuner, timeVsDist, trajectory3D
 '''
 
 Node for dynamic computation of minimum snap trajectory and sending position goals to PI position controller
-
+author: gsuveer, poojaconsul
 '''
 rospy.init_node('controller_minsnap_node')
 
@@ -143,21 +143,14 @@ def callback_pad(msg):
     
     posf = [x, y, z]
     velf = [avg_vx, avg_vy, avg_vz]
-<<<<<<< HEAD
-        
-=======
-    
->>>>>>> 8c329ab2c31568c63b536945ac78616c01300bd4
+
     counter = counter + 1 
     if( counter>100 and landing_executed == False ):
         counter= 0
         t_init = rospy.get_time()
         gen_traj(pos0, vel0, acc0, posf, velf, accf)
-<<<<<<< HEAD
         print('posf and velf: ', posf, velf)
     
-=======
->>>>>>> 8c329ab2c31568c63b536945ac78616c01300bd4
     
 def callback_quad(msg):
     '''

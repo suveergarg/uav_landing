@@ -2,6 +2,8 @@
 
 Node for controlling the movement of the Landing Pad
 
+author: gsuveer, poojaconsul
+
 '''
 #!/usr/bin/env python
 import rospy
@@ -16,12 +18,7 @@ model_name = ""
 model_state_pub = None
 model_state_sub = None
 
-
-waypoints = [[10,10],[10,-10],[20,-10],[20,10],[10,10],[10,-10],[0,-10],[0,10]]
-
 waypoints = [[-10,10],[10,10],[10,-10],[-10,-10]]
-#xvel = [2, 0, -2, 0]
-#yvel = [0, -2, 0, 2]
 
 xvel = [0, 10, 0, -10]
 yvel = [10, 0, -10, 0]
@@ -86,9 +83,6 @@ def modelStatesCallback(msg):
             model_state_pub.publish(model_state)
     '''
 
-    # twist = Twist()
-    
-<<<<<<< HEAD
     if(abs(model_state.pose.position.x - waypoints[waypoints_index][0]) < 0.1 and abs(model_state.pose.position.y - waypoints[waypoints_index][1])<0.1):
         waypoints_index = (waypoints_index + 1) % 4
         if(waypoints[waypoints_index][0] - waypoints[waypoints_index-1][0] == 0):
@@ -115,41 +109,6 @@ def modelStatesCallback(msg):
         twist.linear.y = yvel[waypoints_index]
         model_state.twist = twist
         model_state_pub.publish(model_state)
-=======
-    
-    
-    # if(abs(model_state.pose.position.x - waypoints[waypoints_index][0]) < 0.1 and abs(model_state.pose.position.y - waypoints[waypoints_index][1])<0.1):
-    #     waypoints_index = (waypoints_index + 1) % 4
-    #     # print(waypoints_index, waypoints[waypoints_index][0] - waypoints[waypoints_index-1][0], waypoints[waypoints_index][1] - waypoints[waypoints_index-1][1])
-    #     if(waypoints[waypoints_index][0] - waypoints[waypoints_index-1][0] == 0):
-    #         twist.linear.x = 0.0 
-    #     elif(waypoints[waypoints_index][0] > 0):
-    #         twist.linear.x = abs(x_vel)
-    #     else:
-    #         twist.linear.x = -abs(x_vel)
-        
-    #     if(waypoints[waypoints_index][1] - waypoints[waypoints_index-1][1] == 0):
-    #         twist.linear.y = 0.0 
-    #     elif(waypoints[waypoints_index][1] > 0):
-    #         twist.linear.y = abs(y_vel)
-    #     else:
-    #         twist.linear.y = -abs(y_vel)
-            
-    #     # print(waypoints_index, " ", twist.linear.x, " " ,twist.linear.y)     
-    
-      
-    #     if msg.twist[index_of_interest] != twist:
-    #         # print("here")
-    #         model_state.twist = twist
-    #         model_state_pub.publish(model_state)
-    # else:
-    #     # print("previous waypoint, index = %d"%waypoints_index)
-    #     twist.linear.x = xvel[waypoints_index]
-    #     twist.linear.y = yvel[waypoints_index]
-    #     # print("velocity being set is ", xvel[waypoints_index], yvel[waypoints_index])
-    #     model_state.twist = twist
-    #     model_state_pub.publish(model_state)
->>>>>>> 8c329ab2c31568c63b536945ac78616c01300bd4
 
 if __name__ == '__main__':
     init()

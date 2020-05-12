@@ -22,18 +22,8 @@ import numpy as np
 from geometry_msgs.msg import PoseWithCovariance
 from geometry_msgs.msg import TwistWithCovariance
 from std_msgs.msg import Bool
+import matplotlib.pyplot as plt
 
-rospy.init_node('PID_Tuner')
-
-Record = False
-flag   = False
-
-numPlotPoints = 100000
-time = np.zeros(numPlotPoints)
-position = np.zeros([numPlotPoints, 3])
-velocity = np.zeros([numPlotPoints, 3])
-
-i=0
 
 def callback(msg):
     
@@ -79,7 +69,7 @@ def callback(msg):
         time = np.zeros(numPlotPoints)
         position = np.zeros([numPlotPoints, 3])
         velocity = np.zeros([numPlotPoints, 3]) 
-        plt.savefig('singleTrajectory.png')
+        
         plt.show()
 
 def callback_flag(msg):
@@ -97,11 +87,20 @@ def callback_flag(msg):
         flag = True
     print("Received Message ", msg)
     
-        
-odometry_subscriber = rospy.Subscriber('/ground_truth/state' , Odometry, callback)
-flag_subscriber     = rospy.Subscriber('/pid_tuner',  Bool, callback_flag)
+if __name__ == "__main__":    
+    rospy.init_node('PID_Tuner')
 
-import matplotlib.pyplot as plt
+    Record = False
+    flag   = False
+    
+    numPlotPoints = 100000
+    time = np.zeros(numPlotPoints)
+    position = np.zeros([numPlotPoints, 3])
+    velocity = np.zeros([numPlotPoints, 3])
+    
+    i=0
 
-while (True):
-    pass
+    odometry_subscriber = rospy.Subscriber('/ground_truth/state' , Odometry, callback)
+    flag_subscriber     = rospy.Subscriber('/pid_tuner',  Bool, callback_flag)
+    while (True):
+        pass
