@@ -4,7 +4,7 @@
 
 The project creates an Unmanned Autonomous Vehicle (UAV) capable of landing on stationary and moving target. The UAV is maneuvered through a controller and has the ability to optimally track, detect and land on the target. 
 
-![simulated](https://github.com/suveergarg/uav_landing/blob/master/images/simulated-world.png =100x)
+![simulated](https://github.com/suveergarg/uav_landing/blob/master/images/simulated-world.png=100x)
 
 **Keywords:** moving target, stationary target, landing
 
